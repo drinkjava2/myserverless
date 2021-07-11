@@ -3,26 +3,37 @@
 ### MyServerless(原名GoSqlGo)简介 | Description
 天下武功，唯快不破，程序无非就是接收用户输入、存到数据库。MyServerless能让前端直接写业务逻辑和存取数据库，独立完成项目开发。
 
-### 缘起 | Origin
-一直认为，开发效率最高的方式不是让MVC架构极简(SpringBoot/jFinal)，而是彻底省略掉MVC架构和后端程序员，直接由前端搞定一切，由多层架构变成两层，在前端直接写SQL，缩短界面和数据库之间的距离，才是最快的开发途径。基于此理念，在2011年本人在[这里](https://blog.csdn.net/drinkjava/article/details/6935539)写了一句预言，没想到技术的发展如此之慢，现在要自己亲手去实现它了，这就是MyServerless项目，如果名字翻译成中文，可以翻成"Sql冲冲冲冲冲"，这个比较形象，它表达了SQL为王，一路狂奔，冲到了前端的意思。  
+MyServerless是一个运行于后端的服务。它的主要特点是分为两个阶段：开发期把SQL和Java脚本写在前端HTML或Javascript中进行远程开发，布署期由管理员利用打包工具将SQL和Java从前端移到后端进行布署，以达到隐藏源码实现安全性的目的。  
 
-MyServerless是一个运行于后端的软件，它的最大特点就是在运行期动态编译客户端Java代码，所有SQL和Java代码都可以在前端Html页面完成，可以彻底甩掉后端。开发完成后再利用打包工具将SQL和Java从前端移到后端，以实现安全。  
+MyServerless项目原名为GoSqlGo，意思是可以直接在前端写SQL的意思，但因为考虑到它的开发模式实际上和大厂的Serverless方式有点类似，所以这个项目从3.0版开始更名为MyServerless。  
 
-MyServerless的竞品是GraphQL之类在可以在前端进行业务操作的工具，但区别在于：1.MyServerless支持直接在前端写SQL，而GraphQL不支持 2.MyServerless支持在前端写Java语句, GraphQL不支持。3.GraphQL之类工具是基于API，而MyServerless是基于源码(当然它也可以生成API)，没有API可以消除前后端勾通成本，尤其是查询，只要开启了MyServerless服务，所有的查询操作都可以在前端独立完成，不需要后端程序员编写服务端代码。  
+MyServerless的主要优点在于它是一种无API开发模式，前端可以直接远程在HTML和Javascript里写业务代码和SQL进行开发，不需要后端程序员提供API，所以开发效率高。简单来说就是无招胜有招。  
+
+MyServerless与通常大厂提供的Serverless服务相比，主要区别是：  
+1.免费。因为MyServerless是用户自己编写和布署的，所以不需要付费。  
+2.高度可定制。用户可以自行DIY后端逻辑和工具，如签权、DAO工具等。
+3.上手容易。大厂的Serverless服务非常复杂，很难学习和使用，而MyServerless采用Java脚本和SQL，通常前端一天时间学习即可上手进行开发。  
+4.功能有缺失。MyServerless是个极简版的Serverless工具，以下功能缺失：  
+  a.目前版本不提供在线IDE编辑器。  
+  b.目前版本不提供后端高可用性、高可靠性、自动扩容这些高端功能。  
+  c.目前版本不提供文件上传功能。    
 
 ### 适用场合 | Applications
-最适用于快速、原型开发、业务逻辑简单、业务与页面高度绑定的场合。对于复杂的业务、需要考虑业务重用、以及实现特殊功能（如文件上传等)的场合不适用。MyServerless是独立的服务，通常使用token进行签权，所以可以与任意项目混搭使用，可以开启一个MyServerless服务实现与页面绑定的、简单的CRUD工作，而用传统的开发模式去实现复杂的、需要重用的业务。理论上只要开启了MyServerless服务，所有的查询操作都可以在前端独立完成，不需要后端程序员参与。  
+适用于快速、原型开发、业务逻辑简单的场合。MyServerless是独立的服务，通常使用token进行签权，所以也可以与旧项目混搭使用，而不需要更改旧项目的后端源码。多个MyServerless服务也可以集群使用，以提高性能。  
 
-### 简介 | Features
-用一个例子来说明直接在前端写SQL和Java代码，以下示例实测通过，文件位于[这里](https://gitee.com/drinkjava2/myserverless/blob/master/demo/gsg-jbooox/src/main/webapp/page/demo1.html)。  
-开发阶段把所有的SQL和业务逻辑都写在html或Javascript文件里，在布署阶段再由打包工具抽取到服务端，下面是一个转账业务的演示 ：     
+### 不适用场合 | Not Applicable
+MyServerless目前不适用于复杂的业务开发(比如源码超过50行)，原因不是架构和安全问题，而是因为当前版本不提供在线IDE编辑器，脚本的开发调试效率低，省略掉API的时间会被没有IDE这个缺点抵消。  
+但因为通常项目组成是由80%的简单CRUD调用+20%的复杂业务调用组成，所以对于大项目，也可以考虑用MyServerless+传统API方式结合的方式来进行开发，由MyServerless完成80%的CRUD操作，剩下的20%的复杂业务API依然由传统后端程序员提供。  
+
+### 使用 | Usage
+用例子来说明MyServerless的使用，以下示例直接在前端写SQL和Java脚本，实测通过，文件位于[这里](https://gitee.com/drinkjava2/myserverless/blob/master/server/src/main/webapp/page/demo1.html)。  
 ```
 <!DOCTYPE html>
 <html>
  <head>
  <script src="/js/jquery-1.11.3.min.js"></script>
  <script src="/js/jquery-ajax-ext.js"></script>
- <script src="/js/myserverless.js"></script>
+ <script src="/js/myserverless3.0.js"></script>
  </head>
  <body>
       
@@ -93,15 +104,14 @@ MyServerless的竞品是GraphQL之类在可以在前端进行业务操作的工�
 </html>
 ```
 另外还有两个演示:  
-[演示2](https://gitee.com/drinkjava2/myserverless/blob/master/demo/gsg-jbooox/src/main/webapp/page/demo2.html)：MyServerless结合Vue的使用。  
-[演示3](https://gitee.com/drinkjava2/myserverless/blob/master/demo/gsg-jbooox/src/main/webapp/page/demo3.html): 演示直接在前端进行表单的输入检查并保存到数据库  
+[演示2](https://gitee.com/drinkjava2/myserverless/blob/master/server/src/main/webapp/page/demo2.html)：MyServerless结合Vue的使用。  
+[演示3](https://gitee.com/drinkjava2/myserverless/blob/master/server/src/main/webapp/page/demo3.html): 演示直接在前端进行表单的输入检查并保存到数据库  
 
 ### 运行 | Dependency and Run
-MyServerless项目分为两个目录，core目录为MyServerless内核包，用户不需要关心, server目录是一个示范项目，使用时用户只需要将内容作一些修改即可以运行，如更改数据库连接和签权方式的自定义。  
-在windows下点击server目录下的\start_server.bat批处理，并用用户名demo、密码123登录即可运行。  
+MyServerless项目分为两个目录，core目录为MyServerless内核包源码，普通用户不需要关心内核包。server目录是一个示范项目，使用时用户只需要将server示范项目作一些修改即可以用于实际开发，如更改数据库连接和重写签权类代码。  
+在windows下点击server目录下的\run_server.bat批处理，并用用户名demo、密码123登录即可进入演示。  
 
-第一次运行后，双击goServer.bat，即可将前端的java和Sql方法抽取到后端，再次运行start_server.bat就可以看到前端HTML里已不存在java和sql源码了，这就实现了安全性。  
-
+### 方法 | Methods
 示范项目里主要有以下方法：
 ```
 $java(String, Object...) 执行多行服务端Java语句。第一个参数是Java本体，后面是参数，在Java里可以用$1,$2...来访问。  
@@ -115,7 +125,7 @@ $qryMapList(String, Object...)  返回SQL查询的多行数据，为List<Map>格
 $qryEntity(String, Object...)  返回第一行数据为实体对象，SQL写法是实体类名+逗号+SQL, 示例:$qryEntity(`a.b.Demo, select * from demo`); 
 $qryEntityList(String, Object...)  返回多行数据为List<实体>对象，SQL写法是实体类名+逗号+SQL, 示例:$qryEntityList(`a.b.Demo, select * from demo`);   
 ```
-注意以上方法都是自定义的，用户也可以自定义自忆的方法。以上方法还可以用$$开头返回JSON对象。JSON对象有{code, msg, data, debugInfo} 4个字段，但debugInfo字段仅当服务端配置为debug_info=true时才有值。  
+注意以上方法都是自定义的，用户也可以自定义自己的方法。以上方法还可以用$$开头返回JSON对象。JSON对象有{code, msg, data, debugInfo} 4个字段，但debugInfo字段仅当服务端配置为debug_info=true时才有值。  
 MyServerless方法可以添加以下两类特殊语句：
  1. #xxxxx 形式的ID，用来自定义方法ID，如没有这个ID，方法缺省ID为"Default"
  2. import开头的Java包引入语句。  
@@ -129,7 +139,7 @@ $java('#ReadAmount import abc.DemoUser; return new DemoUser().loadById($1).getAm
 MyServerless如果方法前是两个$符号，如$$java，则返回一个JSON对象，它的data字段保存了返回结果。如果方法前只有一个$符号，如$java，返回的值直接就是javascript对象了，也就是Json的data字段。
  
 ### 布署 | Deploy
-布署阶段：双击运行打包工具goServer.bat，将前端所有的SQL和原生Java片段抽取到服务端去，转变为可调试的Java源文件，原有客户端的SQl和JAVA代码在打包后将成为类似于$gsg('Xxxx_C9GK90J27','A');之类的通过ID进行的调用，以实现安全性。 server目录下还有一个文件名为goFront.bat，这个是打包的逆操作，可以将后端的Java代码移回到前端。
+布署阶段：双击运行打包工具goServer.bat，将前端所有的SQL和原生Java片段抽取到服务端去，转变为可调试的Java源文件，原有前端的SQl和JAVA代码在转换后将成为类似于$gsg('Xxxx_C9GK90J27','A');之类的通过ID进行的调用，以实现安全性。 server目录下还有一个文件名为goFront.bat，这个是逆操作，可以将后端的Java代码移回到前端。
 
 ### 安全 | Security
 在示范项目的myserverless.properties文件里，有以下关于安全的设定：  
@@ -139,16 +149,25 @@ MyServerless如果方法前是两个$符号，如$$java，则返回一个JSON对
 
 ### 常见问题 | FAQ
 * 安全上有没有问题?  
-架构上没有安全问题，MyServerless可以通过token和方法ID，结合自定义方法来检查每一个MyServerless调用是否有执行权限。当然java代码有可能出现安全漏洞，但这个与MyServerless无关了。  
+架构上没有安全问题，MyServerless通过token和方法ID，结合自定义签权方法来检查每一个MyServerless调用是否有执行权限。当然自定义签权方法或java脚本有可能出现安全漏洞，但这个与MyServerless无关了。  
 
-* 为什么采用Java语言而不是Javascript或Go?
-因为作者本人只熟悉Java语言，而且Java本身是主流的服务端语言。  
+* 为什么采用Java作为脚本语言而不是Javascript或Go?
+因为Java是主流的后端语言，后端生态较全，MyServerless采用Java作为脚本语言，可以方便今后添加功能扩充。  
 
-* 为什么示例项目gsg-jBooox采用jSqlBox这么小众的DAO工具?  
-因为jSqlBox是本人写的DAO工具，打广告用的，它的DAO功能很全，可以号称SQL写法百科全书。如果前端对jSqlBox不感冒，可以仿照示例改用不同的DAO工具。  
+* 为什么示例项目采用jSqlBox这么小众的DAO工具?  
+因为jSqlBox是本人写的DAO工具，打广告用的，它的DAO功能很全。如果前端对jSqlBox不感冒，可以仿照示例改用不同的DAO工具如MyBatis等。  
 
 * (小鹏提出)Java写在HTML/Javascript里没有错误检查、语法提示，及重构功能。  
-这个将来可以通过IDE插件解决，但目前只能运行goServ.bat批处理将Sql/Java抽取成Java源码类，在IDE里找错、更正后再用goFront.bat批处理塞回到HTML里去，也可以干脆就不塞回去了，后者就对应传统的前后端分离开发情形。  
+这个将来可以通过开发在线IDE解决，目前的一个解决办法是只能运行goServ.bat批处理将Sql/Java抽取成Java源码类，在IDE里找错、更正后再用goFront.bat批处理塞回到HTML里去，也可以干脆就不塞回去了，后者就对应传统的前后端分离开发情形。  
+
+* 前端Java脚本或SQL有新版本怎么办?  
+  直接在前端源码里改动即可。MyServerless里没有版本号这种说法，因为它是没有API的，所有前端Java脚本源码或SQL改动立即生效，也不需要重启后端服务器。  
+
+* 前端业务代码需要复用(多处调用)怎么办?  
+  需要复用的业务代码写在公共JavaScript库里，其它的Javascript可以调用这些方法。  
+  
+* 怎么做单元测试和集成测试?  
+  需要测试的业务代码写在公共JavaScript库里，前端测试脚本可以调用这些方法。  
 
 ## 相关开源项目 | Related Projects
 - [ORM数据库工具 jSqlBox](https://gitee.com/drinkjava2/jSqlBox)  

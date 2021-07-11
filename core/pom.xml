@@ -4,7 +4,7 @@
  <groupId>com.github.drinkjava2</groupId>
  <artifactId>myserverless</artifactId>
  <packaging>jar</packaging>
- <version>2.0</version>
+ <version>3.0</version>
  
  <name>myserverless</name>
  <description>MyServerless is a tool support write sql and java at front end</description> 
