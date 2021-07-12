@@ -32,8 +32,8 @@ import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
 
 import com.github.drinkjava2.myserverless.MyServerlessEnv;
-import com.github.drinkjava2.myserverless.util.GsgFileUtils;
-import com.github.drinkjava2.myserverless.util.GsgStrUtils;
+import com.github.drinkjava2.myserverless.util.MyServerlessFileUtils;
+import com.github.drinkjava2.myserverless.util.MyServerlessStrUtils;
 
 /**
  * This is a DynamicCompileEngine to compile and load Java source code into
@@ -102,20 +102,20 @@ public class DynamicCompileEngine {
 
         // buildClassPath for Maven unit test by run "mvn test" command
         if (classpath.indexOf("surefire/surefirebooter") > 0) {
-            String path = GsgStrUtils.substringAfter(classpath, "/");
-            path = GsgStrUtils.substringBefore(path, ";");
+            String path = MyServerlessStrUtils.substringAfter(classpath, "/");
+            path = MyServerlessStrUtils.substringBefore(path, ";");
             String mavenJarPath = readFileToString(path);
-            mavenJarPath = GsgStrUtils.substringBetween(mavenJarPath, "Class-Path: ", "Main-Class: ");
-            mavenJarPath = GsgStrUtils.replace(mavenJarPath, "\r\n ", "").trim();
-            mavenJarPath = GsgStrUtils.replace(mavenJarPath, " ", ";");
-            classpath = GsgStrUtils.replace(mavenJarPath, "file:/", "");
+            mavenJarPath = MyServerlessStrUtils.substringBetween(mavenJarPath, "Class-Path: ", "Main-Class: ");
+            mavenJarPath = MyServerlessStrUtils.replace(mavenJarPath, "\r\n ", "").trim();
+            mavenJarPath = MyServerlessStrUtils.replace(mavenJarPath, " ", ";");
+            classpath = MyServerlessStrUtils.replace(mavenJarPath, "file:/", "");
         }
     }
 
     public Class<?> javaCodeToClass(String fullClassName, String javaCode) {
-        if (GsgStrUtils.isEmpty(fullClassName))
+        if (MyServerlessStrUtils.isEmpty(fullClassName))
             throw new CompileException("Can not compile class with empty name");
-        if (GsgStrUtils.isEmpty(javaCode))
+        if (MyServerlessStrUtils.isEmpty(javaCode))
             throw new CompileException("Can not compile class " + fullClassName + " with empty Java source code");
 
         Class<?> result = compiledClassCache.get(fullClassName);
@@ -141,13 +141,13 @@ public class DynamicCompileEngine {
         if (success) {
             JavaClassObject jco = fileManager.getJavaClassObject();
             String path = Thread.currentThread().getContextClassLoader().getResource("").toString();
-            path = GsgStrUtils.replaceFirst(path, "file:", "");
-            String fileName = path + GsgStrUtils.replace(fullClassName, ".", "/") + ".class";
-            GsgFileUtils.writeFile(fileName, jco.getBytes());
+            path = MyServerlessStrUtils.replaceFirst(path, "file:", "");
+            String fileName = path + MyServerlessStrUtils.replace(fullClassName, ".", "/") + ".class";
+            MyServerlessFileUtils.writeFile(fileName, jco.getBytes());
 
             if (MyServerlessEnv.isJavaFileExport()) {
-                fileName = path + GsgStrUtils.replace(fullClassName, ".", "/") + ".java";
-                GsgFileUtils.writeFile(fileName, javaCode, "utf-8");
+                fileName = path + MyServerlessStrUtils.replace(fullClassName, ".", "/") + ".java";
+                MyServerlessFileUtils.writeFile(fileName, javaCode, "utf-8");
             }
 
             try {
@@ -177,7 +177,7 @@ public class DynamicCompileEngine {
                         for (int k = 0; k < d.getEndPosition() - d.getStartPosition(); k++)
                             sb.append("^");
                         String message = d.getMessage(Locale.ENGLISH);
-                        message = GsgStrUtils.substringBefore(message, "\n");
+                        message = MyServerlessStrUtils.substringBefore(message, "\n");
                         sb.append("  ").append(message).append("\n");
                         break;
                     }

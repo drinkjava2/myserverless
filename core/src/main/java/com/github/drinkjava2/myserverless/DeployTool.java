@@ -45,7 +45,7 @@ public class DeployTool {
 	 * at beginning
 	 */
 	public static void goServ() {
-		List<File> files = getHtmlJspJsFiles(MyServerlessEnv.getSrcWebappFolder(), null);
+		List<File> files = searchSupportedWebFiles(MyServerlessEnv.getSrcWebappFolder(), null);
 		for (File file : files)
 			DeployToolUtils.oneFileToServ(file, false);
 	}
@@ -55,7 +55,7 @@ public class DeployTool {
 	 * at beginning
 	 */
 	public static void goFront() {
-		List<File> htmlJspfiles = getHtmlJspJsFiles(MyServerlessEnv.getSrcWebappFolder(), null);
+		List<File> htmlJspfiles = searchSupportedWebFiles(MyServerlessEnv.getSrcWebappFolder(), null);
 		List<String> toDeleteJavas = new ArrayList<String>();
 		for (File file : htmlJspfiles)
 			DeployToolUtils.oneFileToFront(file, false, toDeleteJavas, false);
@@ -67,7 +67,7 @@ public class DeployTool {
 	 * Push back all Sql/Java pieces to front side, ignore "SERV" keyword
 	 */
 	public static void goFrontForce() {
-		List<File> htmlJspfiles = getHtmlJspJsFiles(MyServerlessEnv.getSrcWebappFolder(), null);
+		List<File> htmlJspfiles = searchSupportedWebFiles(MyServerlessEnv.getSrcWebappFolder(), null);
 		List<String> toDeleteJavas = new ArrayList<String>();
 		for (File file : htmlJspfiles)
 			DeployToolUtils.oneFileToFront(file, false, toDeleteJavas, true);
@@ -76,33 +76,40 @@ public class DeployTool {
 	}
 
 	/**
-	 * Extract all Sql/Java pieces to server side, no matter if it have "FRONT"
+	 * Extract all Sql/Java pieces from web files to server side java source code, no matter if it have "FRONT"
 	 * keyword or not
 	 */
 	public static void goServForce() {
-		List<File> files = getHtmlJspJsFiles(MyServerlessEnv.getSrcWebappFolder(), null);
+		List<File> files = searchSupportedWebFiles(MyServerlessEnv.getSrcWebappFolder(), null);
 		for (File file : files)
 			DeployToolUtils.oneFileToServ(file, true);
 	}
 
 	// ============static methods=============================
 
-	private static List<File> getHtmlJspJsFiles(String path, List<File> files) {
+	private static List<File> searchSupportedWebFiles(String path, List<File> files) {
 		if (files == null)
 			files = new ArrayList<File>();
 		File file = new File(path);
 		File[] array = file.listFiles();
 		if (array == null)
 			return files;
-		for (int i = 0; i < array.length; i++) {
-			if (array[i].isFile()) {
-				String fileName = array[i].getName();
-				if (fileName.endsWith(".html") || fileName.endsWith(".htm") || fileName.endsWith(".jsp"))
-					files.add(array[i]);
-			} else if (array[i].isDirectory()) {
-				getHtmlJspJsFiles(array[i].getPath(), files);
-			}
-		}
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].isFile()) {
+                String fileName = array[i].getName();
+                boolean isWebFile = false;
+                for (String web_file : MyServerlessEnv.getWebFiles())
+                    if (fileName.endsWith("." + web_file)) {
+                        isWebFile = true;
+                        break;
+                    }
+
+                if (isWebFile)
+                    files.add(array[i]);
+            } else if (array[i].isDirectory()) {
+                searchSupportedWebFiles(array[i].getPath(), files);
+            }
+        }
 		return files;
 	}
 

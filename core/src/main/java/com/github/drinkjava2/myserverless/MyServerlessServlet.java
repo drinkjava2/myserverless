@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
 import com.github.drinkjava2.myserverless.compile.DynamicCompileEngine;
-import com.github.drinkjava2.myserverless.util.GsgStrUtils;
+import com.github.drinkjava2.myserverless.util.MyServerlessStrUtils;
 import com.github.drinkjava2.jwebbox.WebBox;
 
 /**
@@ -86,21 +86,21 @@ public class MyServerlessServlet extends HttpServlet {
     public static JsonResult doActionBody(HttpServletRequest req, HttpServletResponse resp) {
         if ("true".equals(req.getParameter("login"))) {
             String token = MyServerlessEnv.getTokenSecurity().login(req.getParameter("username"), req.getParameter("password"));
-            if (!GsgStrUtils.isEmpty(token))
+            if (!MyServerlessStrUtils.isEmpty(token))
                 return new JsonResult(200, "login success", token);
             else
                 return new JsonResult(403, "login fail", "").setStatus(403);
         }
         if (MyServerlessEnv.isDevelopStage()) {
             String develop_token = req.getParameter("develop_token");
-            if (GsgStrUtils.isEmpty(develop_token))
+            if (MyServerlessStrUtils.isEmpty(develop_token))
                 return JsonResult.json403("Error: develop_token is required in develop stage", req);
             else if (!develop_token.equals(MyServerlessEnv.getDevelopToken()))
                 return JsonResult.json403("Error: incorrect develop_token", req);
         }
 
         String sqlOrJavaPiece = req.getParameter("$0");
-        if (GsgStrUtils.isEmpty(sqlOrJavaPiece))
+        if (MyServerlessStrUtils.isEmpty(sqlOrJavaPiece))
             return JsonResult.json403("Error: request is empty.", req);
 
         Class<?> childClass = null;
@@ -121,7 +121,7 @@ public class MyServerlessServlet extends HttpServlet {
             if (childClass == null) //still is null
                 return JsonResult.json403("Error: compile failed on server side.", req);
 
-            String methodId = GsgStrUtils.substringBefore(childClass.getSimpleName(), "_");
+            String methodId = MyServerlessStrUtils.substringBefore(childClass.getSimpleName(), "_");
             if (!MyServerlessEnv.getTokenSecurity().allowExecute(req.getParameter("token"), methodId))
                 return JsonResult.json403("Error: no privilege to execute '" + methodId + "' method", req);
 

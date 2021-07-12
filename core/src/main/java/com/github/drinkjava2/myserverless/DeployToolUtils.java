@@ -10,10 +10,10 @@
  */
 package com.github.drinkjava2.myserverless;
 
-import static com.github.drinkjava2.myserverless.util.GsgStrUtils.isEmpty;
-import static com.github.drinkjava2.myserverless.util.GsgStrUtils.positionOfPureChar;
-import static com.github.drinkjava2.myserverless.util.GsgStrUtils.substringAfter;
-import static com.github.drinkjava2.myserverless.util.GsgStrUtils.substringBefore;
+import static com.github.drinkjava2.myserverless.util.MyServerlessStrUtils.isEmpty;
+import static com.github.drinkjava2.myserverless.util.MyServerlessStrUtils.positionOfPureChar;
+import static com.github.drinkjava2.myserverless.util.MyServerlessStrUtils.substringAfter;
+import static com.github.drinkjava2.myserverless.util.MyServerlessStrUtils.substringBefore;
 
 import java.io.File;
 import java.util.LinkedHashMap;
@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.github.drinkjava2.myserverless.util.GsgFileUtils;
-import com.github.drinkjava2.myserverless.util.GsgStrUtils;
+import com.github.drinkjava2.myserverless.util.MyServerlessFileUtils;
+import com.github.drinkjava2.myserverless.util.MyServerlessStrUtils;
 import com.github.drinkjava2.myserverless.util.Systemout; 
 
 /**
@@ -39,7 +39,7 @@ public class DeployToolUtils {
 	 * is true, ignore if have FRONT control word, force extract to server side
 	 */
 	public static void oneFileToServ(File file, boolean forceDeploy) {
-		String text = GsgFileUtils.readFile(file.getAbsolutePath(), "UTF-8");
+		String text = MyServerlessFileUtils.readFile(file.getAbsolutePath(), "UTF-8");
 		Map<String, SqlJavaPiece> formatedMap = new LinkedHashMap<String, SqlJavaPiece>();
 		boolean changed = false;
 		String formated = text;
@@ -57,13 +57,13 @@ public class DeployToolUtils {
                 SqlJavaPiece piece = item.getValue();
                 String className = piece.getClassName();
                 String src = SrcBuilder.createSourceCode(templateClass, PieceType.byGsgMethod(gsgMethod), piece);
-                GsgFileUtils.writeFile(MyServerlessEnv.getSrcDeployFolder() + "/" + className + ".java", src, "UTF-8");
-                formated = GsgStrUtils.replaceFirst(formated, key, "$gsg('" + className + "'");
+                MyServerlessFileUtils.writeFile(MyServerlessEnv.getSrcDeployFolder() + "/" + className + ".java", src, "UTF-8");
+                formated = MyServerlessStrUtils.replaceFirst(formated, key, "$gsg('" + className + "'");
             }
 		}
 
 		if (changed) {
-			GsgFileUtils.writeFile(file.getAbsolutePath(), formated, "UTF-8");
+			MyServerlessFileUtils.writeFile(file.getAbsolutePath(), formated, "UTF-8");
 			Systemout.println("goServ => " + file.getAbsolutePath());
 		}
 	}
@@ -90,7 +90,7 @@ public class DeployToolUtils {
 			String piece = left.substring(0, pos);
 			String leftover = left.substring(pos + 1);
 			SqlJavaPiece parsed = SqlJavaPiece.parseFromFrontText(start, piece);
-			String key = "key" + GsgStrUtils.getRandomString(20);
+			String key = "key" + MyServerlessStrUtils.getRandomString(20);
 			map.put(key, parsed);
 			result = front + key + leftover;
 			needTransfer = result.contains(start);
@@ -102,7 +102,7 @@ public class DeployToolUtils {
 	 * Push back sql/java source code  from server side to HTML/HTM/JSP
 	 */
 	public static void oneFileToFront(File file, boolean forceGoFront, List<String> toDeleteJavas, boolean force) {
-		String text = GsgFileUtils.readFile(file.getAbsolutePath(), "UTF-8");
+		String text = MyServerlessFileUtils.readFile(file.getAbsolutePath(), "UTF-8");
 		if (!text.contains("$gsg('"))
 			return;
 
@@ -115,28 +115,28 @@ public class DeployToolUtils {
             SqlJavaPiece piece = item.getValue();
             String javaSrcFileName;
             javaSrcFileName = MyServerlessEnv.getSrcDeployFolder() + "/" + piece.getOriginText() + ".java";
-            String src = GsgFileUtils.readFile(javaSrcFileName, "UTF-8");
-            String template = GsgStrUtils.substringBetween(src, "extends", "Template");
-            template = GsgStrUtils.substringAfterLast(template, ".");
-            String gsgMethod = GsgStrUtils.toLowerCaseFirstOne(template);
+            String src = MyServerlessFileUtils.readFile(javaSrcFileName, "UTF-8");
+            String template = MyServerlessStrUtils.substringBetween(src, "extends", "Template");
+            template = MyServerlessStrUtils.substringAfterLast(template, ".");
+            String gsgMethod = MyServerlessStrUtils.toLowerCaseFirstOne(template);
             SqlJavaPiece newPiece = SqlJavaPiece.parseFromJavaSrcFile(javaSrcFileName);
-            if (GsgStrUtils.isEmpty(piece.getOriginText()))
-                formated = GsgStrUtils.replaceFirst(formated, key, "$gsg('" + piece.getOriginText() + "'");
+            if (MyServerlessStrUtils.isEmpty(piece.getOriginText()))
+                formated = MyServerlessStrUtils.replaceFirst(formated, key, "$gsg('" + piece.getOriginText() + "'");
             else {
-                String classId=GsgStrUtils.substringBefore(piece.getOriginText(), "_"); //to get #classId
+                String classId=MyServerlessStrUtils.substringBefore(piece.getOriginText(), "_"); //to get #classId
                 if("default".equalsIgnoreCase(classId))
                     classId="";
                 else 
                     classId="#"+classId+" ";
                 String newPieceStr = SrcBuilder.createFrontText(PieceType.byGsgMethod(gsgMethod), newPiece);
-                formated = GsgStrUtils.replaceFirst(formated, key, "$" + gsgMethod + "(`"+ classId + newPieceStr + "`");
+                formated = MyServerlessStrUtils.replaceFirst(formated, key, "$" + gsgMethod + "(`"+ classId + newPieceStr + "`");
                 toDeleteJavas.add(javaSrcFileName);
             }
 
         }
 		map.clear();
 		if (changed) {
-			GsgFileUtils.writeFile(file.getAbsolutePath(), formated, "UTF-8");
+			MyServerlessFileUtils.writeFile(file.getAbsolutePath(), formated, "UTF-8");
 			Systemout.println("goFront => " + file.getAbsolutePath());
 		}
 	}

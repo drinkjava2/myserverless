@@ -10,15 +10,15 @@
  */
 package com.github.drinkjava2.myserverless;
 
-import static com.github.drinkjava2.myserverless.util.GsgStrUtils.getRandomClassName;
-import static com.github.drinkjava2.myserverless.util.GsgStrUtils.isEmpty;
+import static com.github.drinkjava2.myserverless.util.MyServerlessStrUtils.getRandomClassName;
+import static com.github.drinkjava2.myserverless.util.MyServerlessStrUtils.isEmpty;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.github.drinkjava2.myserverless.util.GsgFileUtils;
-import com.github.drinkjava2.myserverless.util.GsgStrUtils;
+import com.github.drinkjava2.myserverless.util.MyServerlessFileUtils;
+import com.github.drinkjava2.myserverless.util.MyServerlessStrUtils;
 
 /**
  * SQL or Java source code piece, this is a virtual model represents the sql or
@@ -109,7 +109,7 @@ public class SqlJavaPiece {
 		if (isEmpty(piece.getId()))
 			piece.setClassName("Default_"+getRandomOrCachedClassName(gsgMethod, frontText));
 		else
-			piece.setClassName(GsgStrUtils.replace(piece.getId(), "#", "")+"_"+getRandomOrCachedClassName(gsgMethod, frontText));
+			piece.setClassName(MyServerlessStrUtils.replace(piece.getId(), "#", "")+"_"+getRandomOrCachedClassName(gsgMethod, frontText));
 		return piece;
 	}
 
@@ -119,7 +119,7 @@ public class SqlJavaPiece {
 	private static String getRandomOrCachedClassName(String gsgMethod, String frontText) {
 		String key = gsgMethod + ":" + frontText;
 		String id = cachedRandomIdMap.get(key);
-		if (GsgStrUtils.isEmpty(id)) {
+		if (MyServerlessStrUtils.isEmpty(id)) {
 			id = getRandomClassName(20);
 			cachedRandomIdMap.put(key, id);
 		}
@@ -135,24 +135,24 @@ public class SqlJavaPiece {
 	private static SqlJavaPiece doParse(String frontText) {
 		SqlJavaPiece piece = new SqlJavaPiece();
 		piece.setOriginText(frontText);
-		if (GsgStrUtils.isEmpty(frontText))
+		if (MyServerlessStrUtils.isEmpty(frontText))
 			return piece;
 		String lastPiece = frontText;
-		String trimed = GsgStrUtils.trimLeadingWhitespace(lastPiece);
-		String firstWord = GsgStrUtils.findFirstWordNoWhiteChars(trimed);
-		while (!GsgStrUtils.isEmpty(firstWord)) {
+		String trimed = MyServerlessStrUtils.trimLeadingWhitespace(lastPiece);
+		String firstWord = MyServerlessStrUtils.findFirstWordNoWhiteChars(trimed);
+		while (!MyServerlessStrUtils.isEmpty(firstWord)) {
 			if (firstWord.startsWith("#"))
 				piece.setId(firstWord);
 			else if ("import".equals(firstWord)) { // NOSONAR
 				// a.b; import b.c; select * from users; // NOSONAR
 				StringBuilder imports = new StringBuilder();
 				while ("import".equals(firstWord)) {
-					String importStr = GsgStrUtils.substringBefore(lastPiece, ";");
+					String importStr = MyServerlessStrUtils.substringBefore(lastPiece, ";");
 					String stmp=(importStr+"; // GSG IMPORT").trim();
 					imports.append(stmp).append("\n");
 					lastPiece = lastPiece.substring(importStr.length() + 1);// import a.b; import c.d
 					trimed = lastPiece.trim();
-					firstWord = GsgStrUtils.findFirstWordNoWhiteChars(trimed);
+					firstWord = MyServerlessStrUtils.findFirstWordNoWhiteChars(trimed);
                     if (!"import".equals(firstWord)) {
                         piece.setImports(imports.toString());
                         piece.setBody(lastPiece);
@@ -164,8 +164,8 @@ public class SqlJavaPiece {
                 return piece;
             }
 			lastPiece = trimed.substring(firstWord.length());
-			trimed = GsgStrUtils.trimLeadingWhitespace(lastPiece);
-			firstWord = GsgStrUtils.findFirstWordNoWhiteChars(trimed);
+			trimed = MyServerlessStrUtils.trimLeadingWhitespace(lastPiece);
+			firstWord = MyServerlessStrUtils.findFirstWordNoWhiteChars(trimed);
 		}
 		 piece.setBody(lastPiece);
 		return piece;
@@ -173,14 +173,14 @@ public class SqlJavaPiece {
 
 	public static SqlJavaPiece parseFromJavaSrcFile(String fileFullPath) {
 		SqlJavaPiece piece = new SqlJavaPiece();
-		String src = GsgFileUtils.readFile(fileFullPath, "UTF-8");
+		String src = MyServerlessFileUtils.readFile(fileFullPath, "UTF-8");
 		piece.setOriginText(src);
-		if (GsgStrUtils.isEmpty(src))
+		if (MyServerlessStrUtils.isEmpty(src))
 			return piece;
-		String code = GsgStrUtils.substringBetween(src, "/* GSG BODY BEGIN */", "/* GSG BODY END */");
-		if (!GsgStrUtils.isEmpty(code))
+		String code = MyServerlessStrUtils.substringBetween(src, "/* GSG BODY BEGIN */", "/* GSG BODY END */");
+		if (!MyServerlessStrUtils.isEmpty(code))
 			piece.setMethodType("JAVA");
-		if (GsgStrUtils.isEmpty(code))
+		if (MyServerlessStrUtils.isEmpty(code))
 			return piece;
 
 		piece.setBody(code);
@@ -188,10 +188,10 @@ public class SqlJavaPiece {
 		piece.setId(null);
 		String imports = "";
 		while (src.contains("// GSG IMPORT")) {
-			String st = GsgStrUtils.substringBefore(src, "// GSG IMPORT");
-			st = GsgStrUtils.substringAfterLast(st, "import ");
+			String st = MyServerlessStrUtils.substringBefore(src, "// GSG IMPORT");
+			st = MyServerlessStrUtils.substringAfterLast(st, "import ");
 			imports += "\n"+("import " + st).trim();
-			src = GsgStrUtils.replaceFirst(src, "// GSG IMPORT", "");
+			src = MyServerlessStrUtils.replaceFirst(src, "// GSG IMPORT", "");
 		}
 		piece.setImports(imports);
 		return piece;

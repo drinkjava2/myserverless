@@ -1,5 +1,7 @@
 //json example: {"code":200, "msg":"sucess", data:"some data", debugInfo:"Error:xxx"}
 
+//$$: return json object     $: return json.data
+
 //Below methods return JSON object 
 function $$gsg(text) {
 	  if(text==null || text=="" || text.indexOf("FULL ")==0) 

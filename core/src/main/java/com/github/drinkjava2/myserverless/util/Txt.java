@@ -41,12 +41,12 @@ public class Txt {
 			return textCache.get(clazz);
 		String thisPublicStaticClassName = clazz.getSimpleName();
 		String javaSourceCode = TxtUtils.getJavaSourceCode(clazz, "UTF-8");
-		String classText = GsgStrUtils.substringBetween(javaSourceCode, "public static class " + thisPublicStaticClassName,
+		String classText = MyServerlessStrUtils.substringBetween(javaSourceCode, "public static class " + thisPublicStaticClassName,
 				"*/");
-		if (GsgStrUtils.isEmpty(classText))
+		if (MyServerlessStrUtils.isEmpty(classText))
 			throw new RuntimeException("Can not find text between \"public static class " + thisPublicStaticClassName
 					+ " and end tag \"*/\"");
-		String s = GsgStrUtils.substringAfter(classText, "/*-");
+		String s = MyServerlessStrUtils.substringAfter(classText, "/*-");
 		textCache.put(clazz, s);
 		return s;
 	}

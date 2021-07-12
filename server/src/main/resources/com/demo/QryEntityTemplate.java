@@ -2,15 +2,13 @@ package com.demo;
 
 import static com.github.drinkjava2.jsqlbox.DB.par;
 import static com.github.drinkjava2.jsqlbox.DB.qryEntityList;
-import static com.github.drinkjava2.jsqlbox.DB.qry;
-import com.github.drinkjava2.jsqlbox.*;
-import com.github.drinkjava2.myserverless.BaseTemplate;
 
 import java.util.List;
 
-import com.github.drinkjava2.myserverless.util.GsgStrUtils;
 import com.github.drinkjava2.jdialects.ClassCacheUtils;
 import com.github.drinkjava2.jsqlbox.DbException;
+import com.github.drinkjava2.myserverless.BaseTemplate;
+import com.github.drinkjava2.myserverless.util.MyServerlessStrUtils;
 
 @SuppressWarnings("unused")
 public class QryEntityTemplate extends BaseTemplate {
@@ -20,10 +18,10 @@ public class QryEntityTemplate extends BaseTemplate {
 		/* GSG BODY BEGIN */
 		String sql = null;
 		/* GSG BODY END */
-		String entityClassName = GsgStrUtils.substringBefore(sql, ",");
+		String entityClassName = MyServerlessStrUtils.substringBefore(sql, ",");
 		Class<?> entityClass = ClassCacheUtils.checkClassExist(entityClassName);
 		DbException.assureNotNull(entityClass, "Entity class parameter can not be null");
-		sql = GsgStrUtils.substringAfter(sql, ",");
+		sql = MyServerlessStrUtils.substringAfter(sql, ",");
 		String[] paramArray = getParamArray();
 		List<Object> result;
 		if (paramArray.length == 0)

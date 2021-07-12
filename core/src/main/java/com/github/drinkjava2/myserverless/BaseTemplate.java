@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.github.drinkjava2.myserverless.util.GsgFileUtils;
+import com.github.drinkjava2.myserverless.util.MyServerlessFileUtils;
 
 /**
  * This is the base environment servlet store environment info
@@ -157,7 +157,7 @@ public abstract class BaseTemplate {
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 InputStream inputStream = connection.getInputStream();
-                return GsgFileUtils.inputStreamToString(inputStream, "utf-8");
+                return MyServerlessFileUtils.inputStreamToString(inputStream, "utf-8");
             }
             System.err.println("Error happen when access Node server on url:" + theURL);
             return "";

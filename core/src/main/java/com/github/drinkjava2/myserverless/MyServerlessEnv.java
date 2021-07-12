@@ -13,12 +13,14 @@ package com.github.drinkjava2.myserverless;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import com.github.drinkjava2.myserverless.util.ClassExistCacheUtils;
-import com.github.drinkjava2.myserverless.util.GsgStrUtils;
+import com.github.drinkjava2.myserverless.util.MyServerlessStrUtils;
 
 /**
  * DeployTool extract all SQL and Java in html or .js files to server side, and
@@ -46,6 +48,8 @@ public class MyServerlessEnv {// NOSONAR
     private static final String develop_token;
 
     private static final TokenSecurity tokenSecurity;
+    
+    private static final List<String> web_files=new ArrayList<String>(); //html, htm, jsp, js 
 
     //private static final AbstractBaseTemplate baseTemplate;
 
@@ -85,10 +89,21 @@ public class MyServerlessEnv {// NOSONAR
                 java_file_export = true;
             else
                 java_file_export = false;
+            
+            String web_files_str = prop.getProperty("web_files");
+            if (MyServerlessStrUtils.isEmpty(web_files_str)) {
+                throw new IllegalArgumentException("web_files configration missing, an example: web_files=html,htm,js");
+            } else {
+                String[] splited = MyServerlessStrUtils.split(",", web_files_str);
+                for (String s : splited)
+                    web_files.add(MyServerlessStrUtils.trimAllWhitespace(s));
+                if (web_files.isEmpty())
+                    throw new IllegalArgumentException("web_files configration missing, an example: web_files=html,htm,js");
+            }
 
             String newFilePath = new File("").getAbsolutePath();
-            newFilePath = GsgStrUtils.substringBefore(newFilePath, "\\target");
-            project_root_folder = GsgStrUtils.substringBefore(newFilePath, "/target");
+            newFilePath = MyServerlessStrUtils.substringBefore(newFilePath, "\\target");
+            project_root_folder = MyServerlessStrUtils.substringBefore(newFilePath, "/target");
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -116,17 +131,17 @@ public class MyServerlessEnv {// NOSONAR
     public static Class<?> findCachedClass(String sqlJavaPiece) {
         if (sqlJavaPiece == null)
             return null;
-        if (!GsgStrUtils.isLegalClassName(sqlJavaPiece))
+        if (!MyServerlessStrUtils.isLegalClassName(sqlJavaPiece))
             return null;
         return ClassExistCacheUtils.checkClassExist(new StringBuilder(MyServerlessEnv.getDeployPackage()).append(".").append(sqlJavaPiece).toString());
     }
 
     public static String getClassesDeployFolder() {
-        return getClassLoaderFolder() + "/" + GsgStrUtils.replace(deploy_package, ".", "/");
+        return getClassLoaderFolder() + "/" + MyServerlessStrUtils.replace(deploy_package, ".", "/");
     }
 
     public static String getSrcDeployFolder() {
-        return getProjectRootFolder() + "/src/main/java/" + GsgStrUtils.replace(deploy_package, ".", "/");
+        return getProjectRootFolder() + "/src/main/java/" + MyServerlessStrUtils.replace(deploy_package, ".", "/");
     }
 
     public static String getSrcWebappFolder() {
@@ -136,8 +151,8 @@ public class MyServerlessEnv {// NOSONAR
 
     public static String getClassLoaderFolder() {
         String path = Thread.currentThread().getContextClassLoader().getResource("").toString();
-        path = GsgStrUtils.replaceFirst(path, "file:/", "");
-        path = GsgStrUtils.replaceFirst(path, "file:", "");
+        path = MyServerlessStrUtils.replaceFirst(path, "file:/", "");
+        path = MyServerlessStrUtils.replaceFirst(path, "file:", "");
         if (path.endsWith("/") || path.endsWith("\\"))
             path = path.substring(0, path.length() - 1);
         return path;
@@ -181,4 +196,7 @@ public class MyServerlessEnv {// NOSONAR
         return tokenSecurity;
     }
 
+    public static List<String> getWebFiles() {
+        return web_files;
+    }
 }

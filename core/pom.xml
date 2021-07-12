@@ -7,7 +7,7 @@
  <version>3.0</version>
  
  <name>myserverless</name>
- <description>MyServerless is a tool support write sql and java at front end</description> 
+ <description>MyServerless is a micro scale serverless sever</description> 
  <url>https://github.com/drinkjava2/myserverless</url>
    
  <issueManagement>

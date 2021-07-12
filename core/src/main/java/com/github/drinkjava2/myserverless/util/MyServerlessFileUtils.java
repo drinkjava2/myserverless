@@ -24,9 +24,9 @@ import java.io.InputStream;
  * @author Yong Zhu
  * @since 1.0.0
  */
-public class GsgFileUtils {
+public class MyServerlessFileUtils {
 
-	private GsgFileUtils() {
+	private MyServerlessFileUtils() {
 		// default constructor
 	}
 
