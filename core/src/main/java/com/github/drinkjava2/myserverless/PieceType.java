@@ -21,11 +21,11 @@ package com.github.drinkjava2.myserverless;
 public enum PieceType {
 	QRY, JAVA, UNKNOW;
 
-	/** Return a PieceType instance based on GsgMethod name */
-	public static PieceType byGsgMethod(String gsgMethod) {
-		if (gsgMethod.startsWith("qry"))
+	/** Return a PieceType instance based on method name */
+	public static PieceType byRemoteMethodName(String method) {
+		if (method.startsWith("qry"))
 			return PieceType.QRY;
-		if (gsgMethod.startsWith("java"))
+		if (method.startsWith("java"))
 			return PieceType.JAVA;
 		return PieceType.UNKNOW;
 	}

@@ -102,22 +102,22 @@ public class SqlJavaPiece {
 	 * b.d.e; import b.d.e; select * from users ");
 	 * 
 	 */
-	public static SqlJavaPiece parseFromFrontText(String gsgMethod, String frontText) {
+	public static SqlJavaPiece parseFromFrontText(String remoteMethod, String frontText) {
 		SqlJavaPiece piece = doParse(frontText);
 		if (!piece.getClassName().isEmpty())
 			return piece;
 		if (isEmpty(piece.getId()))
-			piece.setClassName("Default_"+getRandomOrCachedClassName(gsgMethod, frontText));
+			piece.setClassName("Default_"+getRandomOrCachedClassName(remoteMethod, frontText));
 		else
-			piece.setClassName(MyServerlessStrUtils.replace(piece.getId(), "#", "")+"_"+getRandomOrCachedClassName(gsgMethod, frontText));
+			piece.setClassName(MyServerlessStrUtils.replace(piece.getId(), "#", "")+"_"+getRandomOrCachedClassName(remoteMethod, frontText));
 		return piece;
 	}
 
 	// Cache random IDs, for developing stage only
 	private static final Map<String, String> cachedRandomIdMap = new ConcurrentHashMap<String, String>();
 
-	private static String getRandomOrCachedClassName(String gsgMethod, String frontText) {
-		String key = gsgMethod + ":" + frontText;
+	private static String getRandomOrCachedClassName(String remoteMethod, String frontText) {
+		String key = remoteMethod + ":" + frontText;
 		String id = cachedRandomIdMap.get(key);
 		if (MyServerlessStrUtils.isEmpty(id)) {
 			id = getRandomClassName(20);
@@ -148,7 +148,7 @@ public class SqlJavaPiece {
 				StringBuilder imports = new StringBuilder();
 				while ("import".equals(firstWord)) {
 					String importStr = MyServerlessStrUtils.substringBefore(lastPiece, ";");
-					String stmp=(importStr+"; // GSG IMPORT").trim();
+					String stmp=(importStr+"; // MYSERVERLESS IMPORT").trim();
 					imports.append(stmp).append("\n");
 					lastPiece = lastPiece.substring(importStr.length() + 1);// import a.b; import c.d
 					trimed = lastPiece.trim();
@@ -177,7 +177,7 @@ public class SqlJavaPiece {
 		piece.setOriginText(src);
 		if (MyServerlessStrUtils.isEmpty(src))
 			return piece;
-		String code = MyServerlessStrUtils.substringBetween(src, "/* GSG BODY BEGIN */", "/* GSG BODY END */");
+		String code = MyServerlessStrUtils.substringBetween(src, "/* MYSERVERLESS BODY BEGIN */", "/* MYSERVERLESS BODY END */");
 		if (!MyServerlessStrUtils.isEmpty(code))
 			piece.setMethodType("JAVA");
 		if (MyServerlessStrUtils.isEmpty(code))
@@ -187,11 +187,11 @@ public class SqlJavaPiece {
 
 		piece.setId(null);
 		String imports = "";
-		while (src.contains("// GSG IMPORT")) {
-			String st = MyServerlessStrUtils.substringBefore(src, "// GSG IMPORT");
+		while (src.contains("// MYSERVERLESS IMPORT")) {
+			String st = MyServerlessStrUtils.substringBefore(src, "// MYSERVERLESS IMPORT");
 			st = MyServerlessStrUtils.substringAfterLast(st, "import ");
 			imports += "\n"+("import " + st).trim();
-			src = MyServerlessStrUtils.replaceFirst(src, "// GSG IMPORT", "");
+			src = MyServerlessStrUtils.replaceFirst(src, "// MYSERVERLESS IMPORT", "");
 		}
 		piece.setImports(imports);
 		return piece;

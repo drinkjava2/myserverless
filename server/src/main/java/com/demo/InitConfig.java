@@ -43,17 +43,17 @@ public class InitConfig extends HttpServlet {
     }
 
     public static void initMyServerlessTemplates() { //登记自定义的MyServerless模板
-        MyServerlessEnv.registerGsgTemplate("java", JavaTemplate.class);
-        MyServerlessEnv.registerGsgTemplate("javaTx", JavaTxTemplate.class);
-        MyServerlessEnv.registerGsgTemplate("qryObject", QryObjectTemplate.class);
-        MyServerlessEnv.registerGsgTemplate("qryArray", QryArrayTemplate.class);
-        MyServerlessEnv.registerGsgTemplate("qryArrayList", QryArrayListTemplate.class);
-        MyServerlessEnv.registerGsgTemplate("qryTitleArrayList", QryTitleArrayListTemplate.class);
-        MyServerlessEnv.registerGsgTemplate("qryMap", QryMapTemplate.class);
-        MyServerlessEnv.registerGsgTemplate("qryMapList", QryMapListTemplate.class);
-        MyServerlessEnv.registerGsgTemplate("qryList", QryListTemplate.class);
-        MyServerlessEnv.registerGsgTemplate("qryEntity", QryEntityTemplate.class);
-        MyServerlessEnv.registerGsgTemplate("qryEntityList", QryEntityListTemplate.class);
+        MyServerlessEnv.registerMethodTemplate("java", JavaTemplate.class);
+        MyServerlessEnv.registerMethodTemplate("javaTx", JavaTxTemplate.class);
+        MyServerlessEnv.registerMethodTemplate("qryObject", QryObjectTemplate.class);
+        MyServerlessEnv.registerMethodTemplate("qryArray", QryArrayTemplate.class);
+        MyServerlessEnv.registerMethodTemplate("qryArrayList", QryArrayListTemplate.class);
+        MyServerlessEnv.registerMethodTemplate("qryTitleArrayList", QryTitleArrayListTemplate.class);
+        MyServerlessEnv.registerMethodTemplate("qryMap", QryMapTemplate.class);
+        MyServerlessEnv.registerMethodTemplate("qryMapList", QryMapListTemplate.class);
+        MyServerlessEnv.registerMethodTemplate("qryList", QryListTemplate.class);
+        MyServerlessEnv.registerMethodTemplate("qryEntity", QryEntityTemplate.class);
+        MyServerlessEnv.registerMethodTemplate("qryEntityList", QryEntityListTemplate.class);
     }
 
     public static void initDataBase() { //初始化数据库，为演示作准备

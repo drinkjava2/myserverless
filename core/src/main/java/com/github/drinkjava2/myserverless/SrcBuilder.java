@@ -58,12 +58,12 @@ public abstract class SrcBuilder { // NOSONAR
         classSrc = MyServerlessStrUtils.replaceFirst(classSrc, classDeclar, "class " + sqlJavaPiece.getClassName() + " extends " + templateClass.getName());
 
         if (PieceType.JAVA.equals(piectType)) {
-            classSrc = MyServerlessStrUtils.replaceOneBetween(classSrc, "/* GSG BODY BEGIN */", "/* GSG BODY END */", sqlJavaPiece.getBody());
+            classSrc = MyServerlessStrUtils.replaceOneBetween(classSrc, "/* MYSERVERLESS BODY BEGIN */", "/* MYSERVERLESS BODY END */", sqlJavaPiece.getBody());
         } else if (PieceType.QRY.equals(piectType)) {
             String sql = sqlJavaPiece.getBody();
             sql = MyServerlessStrUtils.replace(sql, "\\`", "`");
             sql = MyServerlessStrUtils.replace(sql, "\"", "\\\"");
-            classSrc = MyServerlessStrUtils.replaceOneBetween(classSrc, "/* GSG BODY BEGIN */", "/* GSG BODY END */", "\n" + "		String sql = \"" + sql + "\";" + "\n		");
+            classSrc = MyServerlessStrUtils.replaceOneBetween(classSrc, "/* MYSERVERLESS BODY BEGIN */", "/* MYSERVERLESS BODY END */", "\n" + "		String sql = \"" + sql + "\";" + "\n		");
         } else
             throw new IllegalArgumentException("Unknow PieceType when create Java source code");
         return classSrc;

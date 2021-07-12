@@ -6,106 +6,106 @@
 function $$gsg(text) {
 	  if(text==null || text=="" || text.indexOf("FULL ")==0) 
 		  return "";
-	  return getGsgJson("", text, arguments);
+	  return getRemoteJson("", text, arguments);
 }
 
 function $$java(text) {
-	return getGsgJson("java", text, arguments);
+	return getRemoteJson("java", text, arguments);
 }
 
 function $$javaTx(text) {
-	return getGsgJson("javaTx", text, arguments);
+	return getRemoteJson("javaTx", text, arguments);
 }
 
 function $$qryObject(text) {
-	return getGsgJson("qryObject", text, arguments);
+	return getRemoteJson("qryObject", text, arguments);
 }
   
 function $$qryArray(text) {
-	return getGsgJson("qryArray", text, arguments);
+	return getRemoteJson("qryArray", text, arguments);
 }
 
 function $$qryArrayList(text) {
-	return getGsgJson("qryArrayList", text, arguments);
+	return getRemoteJson("qryArrayList", text, arguments);
 }
 
 function $$qryTitleArrayList(text) {
-	return getGsgJson("qryTitleArrayList", text, arguments);
+	return getRemoteJson("qryTitleArrayList", text, arguments);
 }
    
 function $$qryMap(text) {
-	return getGsgJson("qryMap", text, arguments);
+	return getRemoteJson("qryMap", text, arguments);
 }
 
 function $$qryList(text) {
-	return getGsgJson("qryList", text, arguments);
+	return getRemoteJson("qryList", text, arguments);
 }
 
 function $$qryMapList(text) {
-	return getGsgJson("qryMapList", text, arguments);
+	return getRemoteJson("qryMapList", text, arguments);
 }
 
 function $$qryEntity(text) {
-	return getGsgJson("qryEntity", text, arguments);
+	return getRemoteJson("qryEntity", text, arguments);
 }
 
 function $$qryEntityList(text) {
-	return getGsgJson("qryEntityList", text, arguments);
+	return getRemoteJson("qryEntityList", text, arguments);
 }
 
 //Below methods return JSON's data 
 function $gsg(text) {
 	  if(text==null || text=="" || text.indexOf("FULL ")==0) 
 		  return "";
-	  return getGsgJsonData("", text, arguments);
+	  return getRemoteJsonData("", text, arguments);
 }
 
 function $java(text) {
-	return getGsgJsonData("java", text, arguments);
+	return getRemoteJsonData("java", text, arguments);
 }
 
 function $javaTx(text) {
-	return getGsgJsonData("javaTx", text, arguments);
+	return getRemoteJsonData("javaTx", text, arguments);
 }
 
 function $qryObject(text) {
-	return getGsgJsonData("qryObject", text, arguments);
+	return getRemoteJsonData("qryObject", text, arguments);
 }
 
 function $qryArray(text) {
-	return getGsgJsonData("qryArray", text, arguments);
+	return getRemoteJsonData("qryArray", text, arguments);
 }
 
 function $qryArrayList(text) {
-	return getGsgJsonData("qryArrayList", text, arguments);
+	return getRemoteJsonData("qryArrayList", text, arguments);
 }
 
 function $qryTitleArrayList(text) {
-	return getGsgJsonData("qryTitleArrayList", text, arguments);
+	return getRemoteJsonData("qryTitleArrayList", text, arguments);
 }
  
 function $qryMap(text) {
-	return getGsgJsonData("qryMap", text, arguments);
+	return getRemoteJsonData("qryMap", text, arguments);
 }
 
 function $qryList(text) {
-	return getGsgJsonData("qryList", text, arguments);
+	return getRemoteJsonData("qryList", text, arguments);
 }
 
 function $qryMapList(text) {
-	return getGsgJsonData("qryMapList", text, arguments);
+	return getRemoteJsonData("qryMapList", text, arguments);
 }
 
 function $qryEntity(text) {
-	return getGsgJsonData("qryEntity", text, arguments);
+	return getRemoteJsonData("qryEntity", text, arguments);
 }
 
 function $qryEntityList(text) {
-	return getGsgJsonData("qryEntityList", text, arguments);
+	return getRemoteJsonData("qryEntityList", text, arguments);
 }
 
 
-function getGsgResponse(gsgMethod, text, args){
+function getRemoteResponse(gsgMethod, text, args){
  var postJson;
  if (window.localStorage) {
    var develop_token=localStorage.getItem("develop_token");
@@ -137,16 +137,16 @@ function gsgLogin(username, password){
 	  return JSON.parse(jsonStr); 
 }
 
-function getGsgJson(gsgMethod, text, args){
-	 var jsonOrHtml= getGsgResponse(gsgMethod, text, args); 
+function getRemoteJson(gsgMethod, text, args){
+	 var jsonOrHtml= getRemoteResponse(gsgMethod, text, args); 
 	 var jsonObj=JSON.parse(jsonOrHtml);
 	  if(jsonObj.debugInfo!=null)
 	      alert(jsonObj.debugInfo);  // or console.log(jsonObj.debugInfo);
 	  return jsonObj;
 }
 
-function getGsgJsonData(gsgMethod, text, args){
-	 var jsonOrHtml= getGsgResponse(gsgMethod, text, args); 
+function getRemoteJsonData(gsgMethod, text, args){
+	 var jsonOrHtml= getRemoteResponse(gsgMethod, text, args); 
 	 var jsonObj;  
 	 try {
 	   jsonObj=JSON.parse(jsonOrHtml);

@@ -44,21 +44,21 @@ public class DeployToolUtils {
 		boolean changed = false;
 		String formated = text;
 
-		for (Entry<String, Class<?>> entry : MyServerlessEnv.getGsgtemplates().entrySet()) {
-			String gsgMethod = entry.getKey();
-			String gsgMtd_ = "$" + gsgMethod + "(`";
+		for (Entry<String, Class<?>> entry : MyServerlessEnv.getMethodTemplates().entrySet()) {
+			String remoteMethod = entry.getKey();
+			String remoteMtd_ = "$" + remoteMethod + "(`";
 			Class<?> templateClass = entry.getValue();
 			formatedMap.clear();
-			formated = formatText(file, formated, formatedMap, gsgMtd_, '`');
+			formated = formatText(file, formated, formatedMap, remoteMtd_, '`');
 
             for (Entry<String, SqlJavaPiece> item : formatedMap.entrySet()) {
                 changed = true;
                 String key = item.getKey();
                 SqlJavaPiece piece = item.getValue();
                 String className = piece.getClassName();
-                String src = SrcBuilder.createSourceCode(templateClass, PieceType.byGsgMethod(gsgMethod), piece);
+                String src = SrcBuilder.createSourceCode(templateClass, PieceType.byRemoteMethodName(remoteMethod), piece);
                 MyServerlessFileUtils.writeFile(MyServerlessEnv.getSrcDeployFolder() + "/" + className + ".java", src, "UTF-8");
-                formated = MyServerlessStrUtils.replaceFirst(formated, key, "$gsg('" + className + "'");
+                formated = MyServerlessStrUtils.replaceFirst(formated, key, "$"+MyServerlessEnv.getRemoteMethod()+"('" + className + "'");
             }
 		}
 
@@ -103,12 +103,12 @@ public class DeployToolUtils {
 	 */
 	public static void oneFileToFront(File file, boolean forceGoFront, List<String> toDeleteJavas, boolean force) {
 		String text = MyServerlessFileUtils.readFile(file.getAbsolutePath(), "UTF-8");
-		if (!text.contains("$gsg('"))
+		if (!text.contains("$"+MyServerlessEnv.getRemoteMethod()+"('"))
 			return;
 
 		boolean changed = false;
 		Map<String, SqlJavaPiece> map = new LinkedHashMap<String, SqlJavaPiece>();
-		String formated = formatText(file, text, map, "$gsg('", '\'');
+		String formated = formatText(file, text, map, "$"+MyServerlessEnv.getRemoteMethod()+"('", '\'');
         for (Entry<String, SqlJavaPiece> item : map.entrySet()) {
             changed = true;
             String key = item.getKey();
@@ -118,18 +118,18 @@ public class DeployToolUtils {
             String src = MyServerlessFileUtils.readFile(javaSrcFileName, "UTF-8");
             String template = MyServerlessStrUtils.substringBetween(src, "extends", "Template");
             template = MyServerlessStrUtils.substringAfterLast(template, ".");
-            String gsgMethod = MyServerlessStrUtils.toLowerCaseFirstOne(template);
+            String remoteMethod = MyServerlessStrUtils.toLowerCaseFirstOne(template);
             SqlJavaPiece newPiece = SqlJavaPiece.parseFromJavaSrcFile(javaSrcFileName);
             if (MyServerlessStrUtils.isEmpty(piece.getOriginText()))
-                formated = MyServerlessStrUtils.replaceFirst(formated, key, "$gsg('" + piece.getOriginText() + "'");
+                formated = MyServerlessStrUtils.replaceFirst(formated, key, "$"+MyServerlessEnv.getRemoteMethod()+"('" + piece.getOriginText() + "'");
             else {
                 String classId=MyServerlessStrUtils.substringBefore(piece.getOriginText(), "_"); //to get #classId
                 if("default".equalsIgnoreCase(classId))
                     classId="";
                 else 
                     classId="#"+classId+" ";
-                String newPieceStr = SrcBuilder.createFrontText(PieceType.byGsgMethod(gsgMethod), newPiece);
-                formated = MyServerlessStrUtils.replaceFirst(formated, key, "$" + gsgMethod + "(`"+ classId + newPieceStr + "`");
+                String newPieceStr = SrcBuilder.createFrontText(PieceType.byRemoteMethodName(remoteMethod), newPiece);
+                formated = MyServerlessStrUtils.replaceFirst(formated, key, "$" + remoteMethod + "(`"+ classId + newPieceStr + "`");
                 toDeleteJavas.add(javaSrcFileName);
             }
 

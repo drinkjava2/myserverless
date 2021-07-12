@@ -24,7 +24,7 @@ import com.github.drinkjava2.myserverless.util.MyServerlessStrUtils;
 import com.github.drinkjava2.jwebbox.WebBox;
 
 /**
- * Dispatch *.gsg call to local java classes and return a JSON
+ * Dispatch call to local java classes and return a JSON
  * 
  * @author Yong Zhu
  * @since 1.0.0
@@ -82,7 +82,7 @@ public class MyServerlessServlet extends HttpServlet {
         }
     }
 
-    /** Dispatch all .gsg call to gsg classes, and return a json */
+    /** Dispatch remote call to related classes, and return a json */
     public static JsonResult doActionBody(HttpServletRequest req, HttpServletResponse resp) {
         if ("true".equals(req.getParameter("login"))) {
             String token = MyServerlessEnv.getTokenSecurity().login(req.getParameter("username"), req.getParameter("password"));
@@ -109,12 +109,12 @@ public class MyServerlessServlet extends HttpServlet {
             if (childClass == null) {
                 if (MyServerlessEnv.isProductStage())
                     return JsonResult.json403("Error: in product stage but not found class on server.", req);
-                String gsgMethod = req.getParameter("gsgMethod");
-                PieceType pieceType = PieceType.byGsgMethod(gsgMethod);
-                Class<?> templateClass = MyServerlessEnv.getGsgtemplates().get(gsgMethod);
+                String remoteMethod = req.getParameter(MyServerlessEnv.getRemoteMethod()+"Method");
+                PieceType pieceType = PieceType.byRemoteMethodName(remoteMethod);
+                Class<?> templateClass = MyServerlessEnv.getMethodTemplates().get(remoteMethod);
                 if (templateClass == null)
-                    return JsonResult.json403("Error: template class for gsg method '" + gsgMethod + "' not found.", req);
-                SqlJavaPiece piece = SqlJavaPiece.parseFromFrontText(gsgMethod, sqlOrJavaPiece);
+                    return JsonResult.json403("Error: template class for remote method '" + remoteMethod + "' not found.", req);
+                SqlJavaPiece piece = SqlJavaPiece.parseFromFrontText(remoteMethod, sqlOrJavaPiece);
                 String classSrc = SrcBuilder.createSourceCode(templateClass, pieceType, piece);
                 childClass = DynamicCompileEngine.instance.javaCodeToClass(MyServerlessEnv.getDeployPackage() + "." + piece.getClassName(), classSrc);
             }

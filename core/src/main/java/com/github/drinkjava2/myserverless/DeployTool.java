@@ -34,10 +34,10 @@ public class DeployTool {
 	}
 
 	/**
-	 * Register a customized GSG template
+	 * Register a customized method template
 	 */
-	public static void registerGsgTemplate(String gsgMethod, Class<?> templateClass) {
-		MyServerlessEnv.registerGsgTemplate(gsgMethod, templateClass);
+	public static void registerMethodTemplate(String method, Class<?> templateClass) {
+		MyServerlessEnv.registerMethodTemplate(method, templateClass);
 	}
 
 	/**

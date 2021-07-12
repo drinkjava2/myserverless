@@ -31,7 +31,7 @@ import com.github.drinkjava2.myserverless.util.MyServerlessStrUtils;
  */
 public class MyServerlessEnv {// NOSONAR
 
-    private static final Map<String, Class<?>> gsgTemplates = new HashMap<String, Class<?>>();
+    private static final Map<String, Class<?>> methodTemplates = new HashMap<String, Class<?>>();
 
     private static final String deploy_package; // deploy package name, store dynamic generated classed
 
@@ -48,8 +48,10 @@ public class MyServerlessEnv {// NOSONAR
     private static final String develop_token;
 
     private static final TokenSecurity tokenSecurity;
-    
-    private static final List<String> web_files=new ArrayList<String>(); //html, htm, jsp, js 
+
+    private static final List<String> web_files = new ArrayList<String>(); //html, htm, jsp, js 
+
+    private static final String remote_method;
 
     //private static final AbstractBaseTemplate baseTemplate;
 
@@ -89,17 +91,21 @@ public class MyServerlessEnv {// NOSONAR
                 java_file_export = true;
             else
                 java_file_export = false;
-            
+
             String web_files_str = prop.getProperty("web_files");
             if (MyServerlessStrUtils.isEmpty(web_files_str)) {
-                throw new IllegalArgumentException("web_files configration missing, an example: web_files=html,htm,js");
+                throw new IllegalArgumentException("web_files configration missing, for example: web_files=html,htm,js");
             } else {
                 String[] splited = MyServerlessStrUtils.split(",", web_files_str);
                 for (String s : splited)
                     web_files.add(MyServerlessStrUtils.trimAllWhitespace(s));
                 if (web_files.isEmpty())
-                    throw new IllegalArgumentException("web_files configration missing, an example: web_files=html,htm,js");
+                    throw new IllegalArgumentException("web_files configration missing, for example: web_files=html,htm,js");
             }
+
+            remote_method = prop.getProperty("remote_method");
+            if (MyServerlessStrUtils.isEmpty(remote_method))
+                throw new IllegalArgumentException("remote_method configration missing, for example: remote_method=remotecall");
 
             String newFilePath = new File("").getAbsolutePath();
             newFilePath = MyServerlessStrUtils.substringBefore(newFilePath, "\\target");
@@ -118,11 +124,11 @@ public class MyServerlessEnv {// NOSONAR
     /**
      * Register customized MyServerless template class
      * 
-     * @param gsgMethod
+     * @param methodName
      * @param templateClass
      */
-    public static void registerGsgTemplate(String gsgMethod, Class<?> templateClass) {
-        gsgTemplates.put(gsgMethod, templateClass);
+    public static void registerMethodTemplate(String methodName, Class<?> templateClass) {
+        methodTemplates.put(methodName, templateClass);
     }
 
     /**
@@ -160,8 +166,8 @@ public class MyServerlessEnv {// NOSONAR
 
     // ==========getter & setter =============
 
-    public static Map<String, Class<?>> getGsgtemplates() {
-        return gsgTemplates;
+    public static Map<String, Class<?>> getMethodTemplates() {
+        return methodTemplates;
     }
 
     public static String getDeployPackage() {
@@ -198,5 +204,9 @@ public class MyServerlessEnv {// NOSONAR
 
     public static List<String> getWebFiles() {
         return web_files;
+    }
+
+    public static String getRemoteMethod() {
+        return remote_method;
     }
 }

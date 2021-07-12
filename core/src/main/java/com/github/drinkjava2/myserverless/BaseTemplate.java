@@ -148,7 +148,7 @@ public abstract class BaseTemplate {
             StringBuilder sb = new StringBuilder();
             for (Entry<String, String> entry : paramMap.entrySet())
                 sb.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue(), "UTF-8")).append("&");
-            sb.append("gsg=t");// end tag
+            sb.append(MyServerlessEnv.getRemoteMethod()).append("=t");// end tag
             String body = sb.toString();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
             writer.write(body);
