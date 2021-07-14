@@ -1,25 +1,25 @@
-### MyServerless(原名为GoSqlGo)简介 | Description
-天下武功，唯快不破，网站开发无非就是接收用户输入、存到数据库。MyServerless能让前端直接写业务逻辑和存取数据库，独立完成项目开发。
+### MyServerless(原GoSqlGo)简介 | Description
+天下武功，唯快不破，MyServerless能让前端直接在HTML或Javascript里写业务代码和SQL，不需要后端程序员参与，从而实现快速开发。 
 
-MyServerless是一个运行于后端的服务。它的主要特点是分为两个阶段：开发期把SQL和Java脚本写在前端HTML或Javascript中进行远程开发，布署期由管理员利用打包工具将SQL和Java从前端移到后端进行布署，以达到隐藏源码实现安全性的目的。  
- 
-MyServerless的主要优点是开发效率高，无API、无文档，前端可以直接远程在HTML和Javascript里写业务源代码和SQL进行开发，不需要后端程序员的参与。  
+MyServerless项目原名为GoSqlGo，因为考虑到它的开发模式有点类似于serverless，后端仅负责编译和执行前端脚本，不参与具体业务开发，而且都是以远程方法作为业务最小功能单元，所以从3.0版起项目更名为MyServerless。
 
-MyServerless与通常大厂提供的Serverless服务相比，主要区别是：  
-1.免费。大厂的Serverless服务是按调用来收费，而MyServerless是用户自己布署的，不需要付费。  
-2.可定制。开发者可以自行定制后端服务，如选择不同的签权工具、DAO工具等。
-3.上手容易。大厂的Serverless服务通常非常复杂，很难学习和使用，而MyServerless采用Java脚本和SQL，所有文档就只有一个Readme，前端只需要学会SQL即可上手进行开发。  
-4.功能极度简化。MyServerless的定位是给前端使用，所以在功能上极度简化。相比与大厂的Serverless服务，在以下功能上有缺失：  
+MyServerless与通常的Serverless服务相比，主要区别是：  
+1.使用免费。通常大厂的Serverless服务是按调用来收费，而MyServerless是用户自己布署的，调用时不收费。  
+2.可定制，无依赖。开发者拥有全部的MyServerless服务端源码，可以自行定制后端服务，如选择不同的签权方式、DAO工具等，不与具体的云服务商绑定，可随时布署到不同的云服务或自有服务器。
+3.技术极简。大厂的Serverless服务通常很复杂而且每家都不一样，很难上手。而MyServerless核心源码只有几千行，采用标准Java脚本语言和SQL，极易上手，通常前端只需要了学会SQL即可上手进行开发。  
+4.功能极度简化。MyServerless的定位是用最少的代价给前端开通数据库访问能力。相比与大厂的Serverless服务，它在功能上有缺失：  
   1)目前不提供在线IDE编辑器。  
-  2)目前不具备高可用性、高流量自动扩容这些高端功能。  
-  3)只专注于数据库操作，不支持一些特殊功能如文件上传等。  
+  2)目前后端服务不提供高可用性、后端自动缩扩容这些功能。  
+  3)目前只专注于数据库访问，不支持一些特殊功能如文件上传等。  
+  4)大厂Serverless服务通常不区分开发期和布署期，而MyServerless因为安全原因，分为开发和布署两个阶段，开发期源码写在前端，布署期要利用打包工具将前端的源码和SQL抽取到后端。
 
 ### 适用场合 | Applications
-MyServerless是一个独立的服务，通常使用token进行签权，可以使用在新项目开发上，也可以与任意旧的后端项目混搭使用。  
+MyServerless适用于原型、快速、简单业务开发，以及前后端都是一个人开发的场合。  
 
 ### 不适用场合 | Not Applicable
-MyServerless不适用于复杂业务开发(比如脚本源码超过50行)，原因是因为目前不提供在线IDE编辑器，调试效率低，如果业务复杂时，在调试上花的时间还不如让后端程序员提供API来的快。  
-通常网站的API是由80%的简单CRUD调用+20%的复杂业务API组成，所以对于大项目，可以考虑用MyServerless+传统API方式结合的模式来开发，开启一个MyServerless服务提供CRUD功能，剩下的20%的复杂业务依然由传统后端程序员提供API，这样可以节省80%的后端工作量。  
+MyServerless不适用于复杂业务开发(比如脚本源码超过50行)，原因只是因为目前不具备IDE编辑器，调试效率低，如果业务复杂时，在调试上花时间还不如直接让传统后端程序员提供API和文档。  
+
+通常网站的API是大部分由简单的CRUD和小部分的复杂业务API组成，大项目也可以考虑用MyServerless结合传统API方式来开发，开启一个MyServerless服务支撑大部分CRUD功能，剩下的复杂业务依然由传统后端程序员提供API和文档，这样可以节省后端程序员大部分的开发工作量。  
 
 ### 使用 | Usage
 用实例来说明MyServerless的使用，以下示例直接在前端写SQL和Java脚本，实测通过，文件位于[这里](https://gitee.com/drinkjava2/myserverless/blob/master/server/src/main/webapp/page/demo1.html)。  
@@ -104,74 +104,74 @@ MyServerless不适用于复杂业务开发(比如脚本源码超过50行)，原�
 [演示3](https://gitee.com/drinkjava2/myserverless/blob/master/server/src/main/webapp/page/demo3.html): 演示直接在前端进行表单的输入检查并保存到数据库  
 
 ### 运行 | Dependency and Run
-MyServerless项目分为两个目录，core目录为MyServerless内核源码，普通用户一般不需要关心。在windows下点击server目录下的\run_server.bat批处理，并用用户名demo、密码123登录即可进入演示。  
-server目录是一个示范项目，使用时只需要将server示范项目作一些修改即可以用于实际开发，如更改数据库连接和重写签权逻辑。
+MyServerless分为server和core两个目录，server目录是一个示范项目，使用时只需要将server项目作一些修改，如更改数据库连接和重写签权逻辑，即可以用于实际开发 。core目录是内核源码，除非要定制后端，用户一般不需要关心。  
+在windows下点击server目录下的run_server.bat批处理，即可进入http://localhost演示界面， 使用用户名demo、密码123登录。  
 
-### 方法 | Methods
-示范项目里主要有以下方法：
+### 方法说明 | Methods
+在前端引入myserverless-3.0.js这个javascript库后，就可以直接在前端调用以下远程函数执行后端业务：
 ```
-$java(String, Object...) 执行多行服务端Java语句。第一个参数是Java本体，后面是参数，在Java里可以用$1,$2...来访问。  
-$javaTx(String, Object...) 执行多行服务端Java语句并开启事务，如果有异常发生，事务回滚。  
-$qryObject(String, Object...) 将SQL查询结果的第一行第一列对象返回，第一个参数是SQL，后面是SQL参数，下同  
-$qryArray(String, Object...)  返回SQL查询的第一行数据  
-$qryArrayList(String, Object...)  返回多行查询结果    
-$qryTitleArrayList(String, Object...)  返回多行查询结果，第一行内容是各个列的标题  
+$java(String, Object...) 在后端执行Java脚本，第一个参数是Java脚本源码，后续参数是业务参数，在Java脚本源码里可以用$1,$2...来代表。  
+$javaTx(String, Object...) 在后端执行Java脚本并开启事务，如果有异常发生，事务回滚。  
+$qryObject(String, Object...) 将SQL查询结果的第一行第一列值返回，第一个参数是SQL，后面是SQL参数，下同  
+$qryArray(String, Object...)  返回SQL查询的第一行数据，以Javascript数组对象格式返回  
+$qryArrayList(String, Object...)  返回多行查询结果，以数组列表格式返回    
+$qryTitleArrayList(String, Object...)  返回多行查询结果，以数组列表格式返回,第一行内容是各个列的标题  
 $qryMap(String, Object...) 返回SQL查询的第一行数据，为Map 格式  
 $qryMapList(String, Object...)  返回SQL查询的多行数据，为List<Map>格式  
 $qryEntity(String, Object...)  返回第一行数据为实体对象，SQL写法是实体类名+逗号+SQL, 示例:$qryEntity(`a.b.Demo, select * from demo`); 
 $qryEntityList(String, Object...)  返回多行数据为List<实体>对象，SQL写法是实体类名+逗号+SQL, 示例:$qryEntityList(`a.b.Demo, select * from demo`);   
 ```
-注意以上方法都是自定义的，用户也可以自定义自己的方法。以上方法还可以用$$开头返回JSON对象。JSON对象有{code, msg, data, debugInfo} 4个字段，但debugInfo字段仅当服务端配置为debug_info=true时才有值。  
+注意以上远程函数调用的第一个参数是Java源码或SQL文本，要用键盘ESC下方的单引号括起来，这是Javascript的特殊单引号，支持多行文本。    
+以上方法都是自定义的，用户也可以自定义自己的方法。以上方法还可以用$$开头返回JSON对象。JSON对象有{code, msg, data, debugInfo} 4个字段，但debugInfo字段仅当服务端配置为debug_info=true时才有值。  
 MyServerless方法可以添加以下两类特殊语句：
- 1. #xxxxx 形式的ID，用来自定义方法ID，如没有这个ID，方法缺省ID为"Default"
- 2. import开头的Java包引入语句。  
-示例：   
+ 1. #xxxxx 形式的ID，用来自定义方法ID，如没有这个ID，方法缺省ID为"Default"。在用户的签权类里，要根据这个方法ID来判断用户是否有权限执行这个方法
+ 2. import开头的语句，这个等同于标准的Java包引入语法  
+示例下面这个方法调用定义了一个名为ReadUserAmount的方法ID，并引入了一个名为abc.DemoUser的Java包:   
 $java('#ReadUserAmount import abc.DemoUser; return new DemoUser().loadById($1).getAmount();', 'u1');   
 
-在类根目录(项目的resources目录)下，有一个名为myserverless.properties的配置文件，可以进行配置，例如配置deploy目录、设定开发/生产阶段、设定develop_token和debug_inifo等，详见它的注释。  
-注意以上方法必须用键盘ESC下方的单引号括起来，这是Javascript的特殊单引号，支持多行文本，不能用普通的单引号。  
-
-开发阶段：MyServerless示范项目在服务端运行，它自带一个动态编译工具，前端发来的SQL和Java片段，被动态编译为Java类，并调用服务端DAO工具，最后返回JSON对象。  
-MyServerless如果方法前是两个$符号，如$$java，则返回一个JSON对象，它的data字段保存了返回结果。如果方法前只有一个$符号，如$java，返回的值直接就是javascript对象了，也就是Json的data字段。  
  
-### 布署 | Deploy
+### 开发和布署 | Develop & Deploy
+在类根目录(项目的resources目录)下，有一个名为myserverless.properties的配置文件，可以进行配置，例如配置deploy目录、设定开发/生产阶段、设定develop_token和debug_inifo等，详见它的注释。  
+
+开发阶段：MyServerless示范项目在服务端运行，它自带一个动态Java脚本编译功能，前端发来的SQL和Java脚本，被动态编译为实际的Java类，并执行这个Java类，最后返回JSON对象。  
+                  如果javascript方法前是两个$符号，如$$java，则返回一个JSON对象，它的data字段保存了返回结果。  
+                  如果javascript方法前只有一个$符号，如$java，则返回的值直接就是Json的data字段。  
+
 布署阶段：双击server目录下的批处理文件go-server.bat，即可将前端所有的SQL和原生Java片段抽取到服务端去，转变为Java源文件，原有前端的SQl和JAVA代码在转换后将成为类似于$gsg('Xxxx_C9GK90J27','A');之类的通过ID进行的调用，以实现安全性。  
-server目录下还有一个文件名为go-Front.bat，这个是逆操作，可以将后端的Java代码移回到前端。  
+server目录下还有一个文件名为go-front.bat，这个是逆操作，可以将后端的Java代码移回到前端。  
 
 ### 安全 | Security
-在项目的myserverless.properties文件里，有以下关于安全的设定：  
-1.stage设定，可以设定为develop或product，当设定为product阶段时，不再接收前端传来的SQL和Java片段  
-2.deveop_token设定，这个设定仅在develop阶段生效，开发阶段前端传来的develop_token必须与服务器的设定一致，否则拒绝访问，这样可以排除非法访问。  
-3.token_security设定，这是用来登记用户自定义的登录检查和token验证逻辑类，使用详见示范项目，MyServerless并没有集成第三方权限框架，所以需要用户根据自已的项目实现自定义的登录和token验证类。通常是根据token和方法ID来判定是否允许执行MyServerless方法。
+在项目的myserverless.properties文件里，有以下关于安全的设计：  
+1.当stage设定为product阶段时，不再动态编译前端传来的SQL和Java片段，以实现运行期的安全。  
+2.当stage设定为develop时，deveop_token必须设定一个密码，在开发阶段会 执行前端传来的任意SQL和Java代码，后端会检查前端传来的develop_token密码与服务器的设定是否一致，否则拒绝访问，这样可以排除开发期的非法访问。  
+3.token_security设定，这是用来登记用户自定义的登录检查类，使用详见示范项目，MyServerless并没有集成第三方权限框架，所以需要用户根据自已的项目实现自定义的登录和token验证类。通常是根据token和方法ID来判定是否允许执行MyServerless方法。
 
 ### 常见问题 | FAQ
 * 安全上有没有问题?  
-架构上没有安全问题，MyServerless通过token和方法ID，结合自定义签权方法来检查每一个ID对应方法的执行权限。当然用户自已写的签权模块或Java脚本中有可能出现安全漏洞，但这个与MyServerless的架构无关了。  
+架构上没有安全问题，MyServerless通过token和方法ID，结合自定义签权方法来检查每一个ID对应方法的执行权限。当然用户写的签权方法或Java脚本中有可能出现安全漏洞，但这个与架构无关。  
 
-* 为什么采用Java作为前端脚本语言而不是Javascript或Go语言?
-因为Java是流行的后端语言，生态较全，MyServerless采用Java语言作为业务脚本语言，可以为以后功能扩充作准备，如集群、分库分表、自动扩容等。  
+* 为什么采用Java作为业务脚本语言而不是Javascript或Go语言? 
+因为作者只对Java熟悉，而且Java是流行的后端语言，生态较全，以后添加功能选择余地也多，如集群、自动扩容等。  
+另外对于大多数CRUD场合，往往是一个SQL就完事，并不需要对Java语言有太多了解，当然如果对Java熟悉，也可以充分利用Java脚本实现复杂的业务操作，这个和前端的能力有关了。  
+如果确实希望采用其它脚本语言，也可以仿照MyServerless编写类似的serverless服务，但这个超出了这个项目的范围了。  
 
 * 为什么示例项目采用jSqlBox这么小众的DAO工具?  
-因为jSqlBox是本人写的DAO工具，打广告用的，它的DAO功能很全。如果前端对jSqlBox不感冒，可以仿照示例改造成使用不同的DAO工具如JDBC-Template、MyBatis等。  
+因为jSqlBox是本人写的DAO工具，打广告用的，它的SQL写法很多。如果前端对jSqlBox不感冒，可以仿照示例改造成使用不同的DAO工具如MyBatis等，因为MyServerless最大的优点是它搭建了一个动态编译并执行前端传来的Java源码和SQL的框架，而不在于它具体采用的某个DAO工具。   
 
 * (小鹏提出)Java写在HTML/Javascript里没有错误检查、语法提示，及重构功能，不利于复杂业务开发。  
-这个将来可以通过提供在线IDE解决。但目前的解决办法是只能求助于传统后端IDE，运行go-server.bat批处理将Sql/Java抽取成Java源码类，在Eclipse/Idea等IDE里找错、更正后再用go-front.bat批处理塞回到HTML里去，也可以干脆就不塞回去了，后者就对应传统的前后端分离开发情形。  
+这个将来可以通过开发IDE插件解决。但目前的解决办法是只能运行go-server.bat批处理将Sql/Java抽取成Java源码类，在Eclipse/Idea等IDE里找错、更正后再用go-front.bat批处理塞回到HTML里去，也可以干脆就不塞回去了，后者就对应传统的前后端分离开发情形。  
 
-* 前端Java脚本或SQL有新版本怎么办?  
-直接在前端源码里改动即可。MyServerless里没有版本号这种说法，因为它是没有API的，业务都是写在前端，所有前端脚本或SQL改动立即生效，不需要重启后端服务器。  
+* 业务有变动，前端业务代码或SQL需要修改怎么办?  
+直接在前端修改Java脚本或SQL即可。MyServerless的业务代码是保存在前端的html或javascript里的，即改即生效，不需要重启后端服务器。  
 
-* 前端业务代码需要复用(多处调用)怎么办?  
-需要复用的业务代码写在公共JavaScript库里，其它的Javascript可以调用这些方法。  
+* 前端业务代码需要复用(如多处调用或集成测试)怎么办?  
+需要复用的业务代码和SQL写在公共JavaScript库里，其它地方可以调用这些库里的Javascript方法。  
   
-* MyServerless的业务代码怎么做单元测试和集成测试?  
-需要测试的业务代码写在公共JavaScript库里，前端测试脚本可以调用这些方法。  
-
-
 ## 相关开源项目 | Related Projects
 - [ORM数据库工具 jSqlBox](https://gitee.com/drinkjava2/jSqlBox)  
 
 ## 期望 | Futures
-如对MyServerless感兴趣请点赞，或发issue提出完善意见，也欢迎提交演示示例。
+如对MyServerless感兴趣请点个赞，或发issue提出完善意见
 
 ## 版权 | License
 [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
