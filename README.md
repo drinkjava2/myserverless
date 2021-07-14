@@ -1,20 +1,18 @@
-### MyServerless简介 | Description
+### MyServerless(原名为GoSqlGo)简介 | Description
 天下武功，唯快不破，网站开发无非就是接收用户输入、存到数据库。MyServerless能让前端直接写业务逻辑和存取数据库，独立完成项目开发。
 
 MyServerless是一个运行于后端的服务。它的主要特点是分为两个阶段：开发期把SQL和Java脚本写在前端HTML或Javascript中进行远程开发，布署期由管理员利用打包工具将SQL和Java从前端移到后端进行布署，以达到隐藏源码实现安全性的目的。  
-
-MyServerless项目原名为GoSqlGo，意思是可以直接在前端写SQL的意思，但因为考虑到它的开发模式实际上和大厂的Serverless模式有点类似，所以这个项目从3.0版开始更名为MyServerless。  
-
-MyServerless的主要优点是开发效率高，因为它是一种无API开发模式，前端可以直接远程在HTML和Javascript里写业务源代码和SQL进行开发，不需要后端程序员的参与。  
+ 
+MyServerless的主要优点是开发效率高，无API、无文档，前端可以直接远程在HTML和Javascript里写业务源代码和SQL进行开发，不需要后端程序员的参与。  
 
 MyServerless与通常大厂提供的Serverless服务相比，主要区别是：  
 1.免费。大厂的Serverless服务是按调用来收费，而MyServerless是用户自己布署的，不需要付费。  
-2.可定制。开发者可以自行修改后端服务，如选择不同的签权工具、DAO工具等。
-3.上手容易。大厂的Serverless服务通常非常复杂，很难学习和使用，而MyServerless采用Java脚本和SQL，所有文档就只有一个Readme，通常前端花一天时间学习SQL即可上手进行开发。  
-4.功能极度简化。MyServerless是个简化版的Serverless工具，相比与大厂的Serverless服务，在以下功能上有缺失：  
+2.可定制。开发者可以自行定制后端服务，如选择不同的签权工具、DAO工具等。
+3.上手容易。大厂的Serverless服务通常非常复杂，很难学习和使用，而MyServerless采用Java脚本和SQL，所有文档就只有一个Readme，前端只需要学会SQL即可上手进行开发。  
+4.功能极度简化。MyServerless的定位是给前端使用，所以在功能上极度简化。相比与大厂的Serverless服务，在以下功能上有缺失：  
   1)目前不提供在线IDE编辑器。  
   2)目前不具备高可用性、高流量自动扩容这些高端功能。  
-  3)只专注于数据库存取，不支持一些特殊功能如文件上传等。  
+  3)只专注于数据库操作，不支持一些特殊功能如文件上传等。  
 
 ### 适用场合 | Applications
 MyServerless是一个独立的服务，通常使用token进行签权，可以使用在新项目开发上，也可以与任意旧的后端项目混搭使用。  
