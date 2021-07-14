@@ -42,7 +42,7 @@ public class MainApp {
         //InitConfig 进行了演示数据库的创建和MyServerless自定义模板方法的登记
         info.addServlet(Servlets.servlet("initConfig", InitConfig.class).setLoadOnStartup(0));
 
-        //MyServerlessServlet用于处理.gsg请求
+        //MyServerlessServlet用于处理请求
         info.addServlet(Servlets.servlet("dispatch", MyServerlessServlet.class).addMapping("*.mysrv"));
         info.setResourceManager(new FileResourceManager(new File(webAppFolder), 0))//
                 .addWelcomePage("/page/home.html")//

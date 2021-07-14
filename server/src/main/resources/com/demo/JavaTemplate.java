@@ -17,9 +17,9 @@ public class JavaTemplate extends BaseTemplate {
 
     @Override
 	public Object executeBody() {
-		/* GSG BODY BEGIN */
+		/* MYSERVERLESS BODY BEGIN */
 		return null;
-		/* GSG BODY END */
+		/* MYSERVERLESS BODY END */
 	}
 
 }

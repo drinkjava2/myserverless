@@ -35,7 +35,7 @@ public class DaoTest {
 		SqlJavaPiece piece = SqlJavaPiece.parseFromFrontText("java", java);
 		Assert.assertEquals("#GetAmount", piece.getId());
 		System.out.println(piece.getImports());
-		Assert.assertEquals(" import java.lang.Object; // GSG IMPORT\n", piece.getImports());
+		Assert.assertEquals(" import java.lang.Object; // MYSERVERLESS IMPORT\n", piece.getImports());
 	}
 
 	@Test
@@ -44,7 +44,7 @@ public class DaoTest {
 		InitConfig.initMyServerlessTemplates();
 		MockRequest req = new MockRequest();
 		MockResponse resp = new MockResponse();
-		req.setParameter("gsgMethod", "qry");
+		req.setParameter("remoteMethod", "qry");
 		req.setParameter("$0",
 				"#Classname import java.lang.Object; import java.lang.String;  select amount from account where id=? and amount>=?");
 		req.setParameter("$1", "A");
@@ -60,7 +60,7 @@ public class DaoTest {
 		InitConfig.initMyServerlessTemplates();
 		MockRequest req = new MockRequest();
 		MockResponse resp = new MockResponse();
-		req.setParameter("gsgMethod", "javaTx");
+		req.setParameter("remoteMethod", "javaTx");
 		req.setParameter("$0", "" + new JavaPiece());
 		req.setParameter("$1", "A");
 		req.setParameter("$2", "B");

@@ -13,9 +13,9 @@ public class QryTitleArrayListTemplate extends BaseTemplate {
     
 	@Override
 	public Object executeBody() {
-		/* GSG BODY BEGIN */
+		/* MYSERVERLESS BODY BEGIN */
 		String sql = null;
-		/* GSG BODY END */
+		/* MYSERVERLESS BODY END */
 		String[] paramArray = getParamArray();
 		if (paramArray.length == 0)
 			return qry(new TitleArrayListHandler(), sql);

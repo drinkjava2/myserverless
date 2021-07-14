@@ -15,9 +15,9 @@ import com.github.drinkjava2.jtransactions.tinytx.TinyTxConnectionManager;
 public class JavaTxTemplate extends BaseTemplate {
 
     public Object executeBody() {
-        /* GSG BODY BEGIN */
+        /* MYSERVERLESS BODY BEGIN */
         return null;
-        /* GSG BODY END */
+        /* MYSERVERLESS BODY END */
     }
 
     @Override

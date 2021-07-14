@@ -13,9 +13,9 @@ public class QryEntityListTemplate extends BaseTemplate {
     
 	@Override
 	public Object executeBody() {
-		/* GSG BODY BEGIN */
+		/* MYSERVERLESS BODY BEGIN */
 		String sql = null;
-		/* GSG BODY END */
+		/* MYSERVERLESS BODY END */
 		String entityClassName = MyServerlessStrUtils.substringBefore(sql, ",");
 		Class<?> entityClass = ClassCacheUtils.checkClassExist(entityClassName);
 		DbException.assureNotNull(entityClass, "Entity class parameter can not be null");

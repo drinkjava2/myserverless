@@ -1,9 +1,8 @@
 //json example: {"code":200, "msg":"sucess", data:"some data", debugInfo:"Error:xxx"}
+//$$: return json object     
+//$: return json.data
 
-//$$: return json object     $: return json.data
-
-//Below methods return JSON object 
-function $$gsg(text) {
+function $$mysrv(text) {
 	  if(text==null || text=="" || text.indexOf("FULL ")==0) 
 		  return "";
 	  return getRemoteJson("", text, arguments);
@@ -54,7 +53,7 @@ function $$qryEntityList(text) {
 }
 
 //Below methods return JSON's data 
-function $gsg(text) {
+function $mysrv(text) {
 	  if(text==null || text=="" || text.indexOf("FULL ")==0) 
 		  return "";
 	  return getRemoteJsonData("", text, arguments);
@@ -105,19 +104,19 @@ function $qryEntityList(text) {
 }
 
 
-function getRemoteResponse(gsgMethod, text, args){
+function getRemoteResponse(methodName, text, args){
  var postJson;
  if (window.localStorage) {
    var develop_token=localStorage.getItem("develop_token");
    var token=localStorage.getItem("token");
-   postJson= {"gsgMethod":gsgMethod, "develop_token":develop_token, "token":token, "$0": text};
+   postJson= {"remoteMethod":methodName, "develop_token":develop_token, "token":token, "$0": text};
  } else 
-   postJson= {"gsgMethod":gsgMethod,"$0": text};
+   postJson= {"remoteMethod":methodName,"$0": text};
    for (var i = 1; i < args.length; i++) 
 		  postJson["$"+i]=args[i]; 
   return $.ajax({
 		type : 'POST',
-		url : "/gsg.gsg",
+		url : "/myserverless.mysrv",
 		cache : false,
 		dataType : "json",
 		data : postJson,
@@ -125,10 +124,10 @@ function getRemoteResponse(gsgMethod, text, args){
 	}).responseText;
 }
 
-function gsgLogin(username, password){
+function myserverlessLogin(username, password){
 	  var jsonStr= $.ajax({
 			type : 'POST',
-			url : "/gsg.gsg?login=true&username="+username+"&password="+password,
+			url : "/myserverless.mysrv?login=true&username="+username+"&password="+password,
 			cache : false,
 			dataType : "json",
 			data : {},
@@ -137,16 +136,16 @@ function gsgLogin(username, password){
 	  return JSON.parse(jsonStr); 
 }
 
-function getRemoteJson(gsgMethod, text, args){
-	 var jsonOrHtml= getRemoteResponse(gsgMethod, text, args); 
+function getRemoteJson(remoteMethod, text, args){
+	 var jsonOrHtml= getRemoteResponse(remoteMethod, text, args); 
 	 var jsonObj=JSON.parse(jsonOrHtml);
 	  if(jsonObj.debugInfo!=null)
 	      alert(jsonObj.debugInfo);  // or console.log(jsonObj.debugInfo);
 	  return jsonObj;
 }
 
-function getRemoteJsonData(gsgMethod, text, args){
-	 var jsonOrHtml= getRemoteResponse(gsgMethod, text, args); 
+function getRemoteJsonData(remoteMethod, text, args){
+	 var jsonOrHtml= getRemoteResponse(remoteMethod, text, args); 
 	 var jsonObj;  
 	 try {
 	   jsonObj=JSON.parse(jsonOrHtml);
