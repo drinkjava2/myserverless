@@ -12,6 +12,7 @@ package com.demo;
 
 import java.io.File;
 
+import com.github.drinkjava2.myserverless.MyServerlessEnv;
 import com.github.drinkjava2.myserverless.MyServerlessServlet;
 
 import io.undertow.Undertow;
@@ -42,11 +43,11 @@ public class MainApp {
         //InitConfig 进行了演示数据库的创建和MyServerless自定义模板方法的登记
         info.addServlet(Servlets.servlet("initConfig", InitConfig.class).setLoadOnStartup(0));
 
-        //MyServerlessServlet用于处理请求
-        info.addServlet(Servlets.servlet("dispatch", MyServerlessServlet.class).addMapping("*.mysrv"));
-        info.setResourceManager(new FileResourceManager(new File(webAppFolder), 0))//
-                .addWelcomePage("/page/home.html")//
-                .addErrorPage(new ErrorPage("/page/404.html"));
+        //undertow添加MyServerlessServlet处理远程方法调用
+        info.addServlet(Servlets.servlet("dispatch", MyServerlessServlet.class).addMapping(MyServerlessEnv.getRemoteMethodSuffix()));
+        info.setResourceManager(new FileResourceManager(new File(webAppFolder), 0))
+                .addWelcomePage("/page/home.html")//指定缺省页
+                .addErrorPage(new ErrorPage("/page/404.html")); //指定404页
         DeploymentManager manager = Servlets.defaultContainer().addDeployment(info);
         manager.deploy();
         Undertow server = Undertow.builder().addHttpListener(80, "localhost").setHandler(manager.start()).build();

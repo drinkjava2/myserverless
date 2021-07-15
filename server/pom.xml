@@ -42,7 +42,6 @@
         <version.source-plugin>2.4</version.source-plugin>
         <version.javadoc-plugin>2.10.3</version.javadoc-plugin>
         <version.gpg-plugin>1.6</version.gpg-plugin> 
-	<tomcat.version>8.5.23</tomcat.version>
   </properties>
   
   <dependencies>

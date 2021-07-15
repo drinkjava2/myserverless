@@ -17,9 +17,9 @@ MyServerless与通常的Serverless服务相比，主要区别是：
 MyServerless适用于原型、快速、简单业务开发，以及前后端都是一个人开发的场合。  
 
 ### 不适用场合 | Not Applicable
-MyServerless不适用于复杂业务开发(比如脚本源码超过50行)，原因只是因为目前不具备IDE编辑器，调试效率低，如果业务复杂时，在调试上花时间还不如直接让传统后端程序员提供API和文档。  
+MyServerless不适用于复杂业务开发(比如脚本源码超过50行)，原因是因为目前不具备IDE插件可以调试存放在前端的Java脚本，调试效率低，如果业务复杂时，在调试上花的时间还不如直接让传统后端程序员提供API和文档。  
 
-通常网站的API是大部分由简单的CRUD和小部分的复杂业务API组成，大项目也可以考虑用MyServerless结合传统API方式来开发，开启一个MyServerless服务支撑大部分CRUD功能，剩下的复杂业务依然由传统后端程序员提供API和文档，这样可以节省后端程序员大部分的开发工作量。  
+通常网站的API是由占绝大多数的简单CRUD和少部分的复杂业务API组成，大项目也可以考虑用MyServerless结合传统API方式来开发，开启一个MyServerless服务支撑简单的CRUD功能，剩下的复杂业务依然由传统后端程序员提供API和文档，这样可以节省后端程序员大部分的开发工作量。  
 
 ### 使用 | Usage
 用实例来说明MyServerless的使用，以下示例直接在前端写SQL和Java脚本，实测通过，文件位于[这里](https://gitee.com/drinkjava2/myserverless/blob/master/server/src/main/webapp/page/demo1.html)。  
@@ -148,25 +148,26 @@ server目录下还有一个文件名为go-front.bat，这个是逆操作，可�
 
 ### 常见问题 | FAQ
 * 安全上有没有问题?  
-架构上没有安全问题，MyServerless通过token和方法ID，结合自定义签权方法来检查每一个ID对应方法的执行权限。当然用户写的签权方法或Java脚本中有可能出现安全漏洞，但这个与架构无关。  
+架构上没有安全问题，MyServerless通过token和方法ID，结合自定义签权方法来检查每一个方法ID的执行权限。当然用户写的签权方法或Java脚本中有可能出现安全漏洞，但这与本项目的架构无关。  
 
-* 为什么采用Java作为业务脚本语言而不是Javascript或Go语言? 
-因为作者只对Java熟悉，而且Java是流行的后端语言，生态较全，以后添加功能选择余地也多，如集群、自动扩容等。  
-另外对于大多数CRUD场合，往往是一个SQL就完事，并不需要对Java语言有太多了解，当然如果对Java熟悉，也可以充分利用Java脚本实现复杂的业务操作，这个和前端的能力有关了。  
-如果确实希望采用其它脚本语言，也可以仿照MyServerless编写类似的serverless服务，但这个超出了这个项目的范围了。  
+* 为什么采用Java作为业务脚本语言而不是Javascript/C#/Go等语言? 
+因为作者只对Java熟悉，没有精力象大厂的Serverless服务一样提供多种语言实现。其实用户如果对其它语言熟悉，也可以仿照MyServerless的思路编写自己的serverless服务，原理不复杂，无非就是源码保存在远程动态编译执行，布署时再抽取出来以实现安全性。
 
-* 为什么示例项目采用jSqlBox这么小众的DAO工具?  
-因为jSqlBox是本人写的DAO工具，打广告用的，它的SQL写法很多。如果前端对jSqlBox不感冒，可以仿照示例改造成使用不同的DAO工具如MyBatis等，因为MyServerless最大的优点是它搭建了一个动态编译并执行前端传来的Java源码和SQL的框架，而不在于它具体采用的某个DAO工具。   
+* 为什么默认server项目采用jSqlBox这么小众的DAO工具?  
+因为jSqlBox是本人写的DAO工具，打广告用的，它的SQL写法很多。如果前端对jSqlBox不感冒，可以仿照示例改造成使用不同的DAO工具如MyBatis等。MyServerless重点在于提供了一个动态编译执行远程Java源码的框架，不拘泥于具体的某个技术。  
 
 * (小鹏提出)Java写在HTML/Javascript里没有错误检查、语法提示，及重构功能，不利于复杂业务开发。  
 这个将来可以通过开发IDE插件解决。但目前的解决办法是只能运行go-server.bat批处理将Sql/Java抽取成Java源码类，在Eclipse/Idea等IDE里找错、更正后再用go-front.bat批处理塞回到HTML里去，也可以干脆就不塞回去了，后者就对应传统的前后端分离开发情形。  
 
-* 业务有变动，前端业务代码或SQL需要修改怎么办?  
-直接在前端修改Java脚本或SQL即可。MyServerless的业务代码是保存在前端的html或javascript里的，即改即生效，不需要重启后端服务器。  
+* 业务有变动，前端代码或SQL需要修改怎么办?  
+开发期直接在前端修改Java代码或SQL即可，即改即生效，不需要重启后端服务器。布署时由运维布署并重启产品服务器。  
 
-* 前端业务代码需要复用(如多处调用或集成测试)怎么办?  
-需要复用的业务代码和SQL写在公共JavaScript库里，其它地方可以调用这些库里的Javascript方法。  
-  
+* 前端业务代码需要复用(如多处调用或测试)怎么办?  
+需要复用的业务代码和SQL写在公共JavaScript库里，前端其它地方调用这些公共库里的方法。  
+
+* 与GraphQL或XXX-API等项目的区别？
+以上项目是基于API及文档的创建和使用，而MyServerless是直接在前端写Java脚本和SQL，根本就不创建API。
+ 
 ## 相关开源项目 | Related Projects
 - [ORM数据库工具 jSqlBox](https://gitee.com/drinkjava2/jSqlBox)  
 

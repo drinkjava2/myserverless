@@ -109,7 +109,7 @@ public class MyServerlessServlet extends HttpServlet {
             if (childClass == null) {
                 if (MyServerlessEnv.isProductStage())
                     return JsonResult.json403("Error: in product stage but not found class on server.", req);
-                String remoteMethod = req.getParameter(MyServerlessEnv.getRemoteMethod()+"Method");
+                String remoteMethod = req.getParameter("remoteMethod");
                 PieceType pieceType = PieceType.byRemoteMethodName(remoteMethod);
                 Class<?> templateClass = MyServerlessEnv.getMethodTemplates().get(remoteMethod);
                 if (templateClass == null)
@@ -137,6 +137,7 @@ public class MyServerlessServlet extends HttpServlet {
 
             return instance.execute();
         } catch (Exception e) {
+            e.printStackTrace();
             if (MyServerlessEnv.isDebugInfo()) //if debugInfo is true, will put exception message and debug info in JSON
                 return new JsonResult(403, "Error: server internal error.").setStatus(403).setDebugInfo(JsonResult.getDebugInfo(req) + "\n" + e.getMessage());
             else

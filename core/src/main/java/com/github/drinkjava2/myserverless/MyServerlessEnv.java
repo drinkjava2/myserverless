@@ -51,7 +51,7 @@ public class MyServerlessEnv {// NOSONAR
 
     private static final List<String> web_files = new ArrayList<String>(); //html, htm, jsp, js 
 
-    private static final String remote_method;
+    private static final String remote_method_suffix;
 
     //private static final AbstractBaseTemplate baseTemplate;
 
@@ -94,18 +94,18 @@ public class MyServerlessEnv {// NOSONAR
 
             String web_files_str = prop.getProperty("web_files");
             if (MyServerlessStrUtils.isEmpty(web_files_str)) {
-                throw new IllegalArgumentException("web_files configration missing, for example: web_files=html,htm,js");
+                throw new IllegalArgumentException("web_files configration missing, an example: web_files=html,htm,js");
             } else {
                 String[] splited = MyServerlessStrUtils.split(",", web_files_str);
                 for (String s : splited)
                     web_files.add(MyServerlessStrUtils.trimAllWhitespace(s));
                 if (web_files.isEmpty())
-                    throw new IllegalArgumentException("web_files configration missing, for example: web_files=html,htm,js");
+                    throw new IllegalArgumentException("web_files configration missing, an example: web_files=html,htm,js");
             }
 
-            remote_method = prop.getProperty("remote_method");
-            if (MyServerlessStrUtils.isEmpty(remote_method))
-                throw new IllegalArgumentException("remote_method configration missing, for example: remote_method=remotecall");
+            remote_method_suffix = prop.getProperty("remote_method_suffix");
+            if (MyServerlessStrUtils.isEmpty(remote_method_suffix))
+                throw new IllegalArgumentException("remote_method_suffix configration missing, an example: remote_method_suffix=somesuffix");
 
             String newFilePath = new File("").getAbsolutePath();
             newFilePath = MyServerlessStrUtils.substringBefore(newFilePath, "\\target");
@@ -206,7 +206,7 @@ public class MyServerlessEnv {// NOSONAR
         return web_files;
     }
 
-    public static String getRemoteMethod() {
-        return remote_method;
+    public static String getRemoteMethodSuffix() {
+        return remote_method_suffix;
     }
 }

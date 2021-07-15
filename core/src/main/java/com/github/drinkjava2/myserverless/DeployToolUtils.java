@@ -58,7 +58,7 @@ public class DeployToolUtils {
                 String className = piece.getClassName();
                 String src = SrcBuilder.createSourceCode(templateClass, PieceType.byRemoteMethodName(remoteMethod), piece);
                 MyServerlessFileUtils.writeFile(MyServerlessEnv.getSrcDeployFolder() + "/" + className + ".java", src, "UTF-8");
-                formated = MyServerlessStrUtils.replaceFirst(formated, key, "$"+MyServerlessEnv.getRemoteMethod()+"('" + className + "'");
+                formated = MyServerlessStrUtils.replaceFirst(formated, key, "$"+MyServerlessEnv.getRemoteMethodSuffix()+"('" + className + "'");
             }
 		}
 
@@ -103,12 +103,12 @@ public class DeployToolUtils {
 	 */
 	public static void oneFileToFront(File file, boolean forceGoFront, List<String> toDeleteJavas, boolean force) {
 		String text = MyServerlessFileUtils.readFile(file.getAbsolutePath(), "UTF-8");
-		if (!text.contains("$"+MyServerlessEnv.getRemoteMethod()+"('"))
+		if (!text.contains("$"+MyServerlessEnv.getRemoteMethodSuffix()+"('"))
 			return;
 
 		boolean changed = false;
 		Map<String, SqlJavaPiece> map = new LinkedHashMap<String, SqlJavaPiece>();
-		String formated = formatText(file, text, map, "$"+MyServerlessEnv.getRemoteMethod()+"('", '\'');
+		String formated = formatText(file, text, map, "$"+MyServerlessEnv.getRemoteMethodSuffix()+"('", '\'');
         for (Entry<String, SqlJavaPiece> item : map.entrySet()) {
             changed = true;
             String key = item.getKey();
@@ -121,7 +121,7 @@ public class DeployToolUtils {
             String remoteMethod = MyServerlessStrUtils.toLowerCaseFirstOne(template);
             SqlJavaPiece newPiece = SqlJavaPiece.parseFromJavaSrcFile(javaSrcFileName);
             if (MyServerlessStrUtils.isEmpty(piece.getOriginText()))
-                formated = MyServerlessStrUtils.replaceFirst(formated, key, "$"+MyServerlessEnv.getRemoteMethod()+"('" + piece.getOriginText() + "'");
+                formated = MyServerlessStrUtils.replaceFirst(formated, key, "$"+MyServerlessEnv.getRemoteMethodSuffix()+"('" + piece.getOriginText() + "'");
             else {
                 String classId=MyServerlessStrUtils.substringBefore(piece.getOriginText(), "_"); //to get #classId
                 if("default".equalsIgnoreCase(classId))

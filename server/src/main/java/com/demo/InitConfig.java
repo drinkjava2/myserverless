@@ -62,10 +62,10 @@ public class InitConfig extends HttpServlet {
 
         //演示项目使用jSqlBox作为DAO工具，以下是jSqlBox的配置
         DbContext.resetGlobalVariants();
-        DbContext.setGlobalNextDialect(Dialect.H2Dialect);
-        DbContext.setGlobalNextAllowShowSql(true);
-        Dialect.setGlobalAllowReservedWords(true);
-        DbContext ctx = new DbContext(ds);
+        DbContext.setGlobalNextDialect(Dialect.H2Dialect);//手工指定数据库方言
+        DbContext.setGlobalNextAllowShowSql(true); //允许输出SQL日志到控制台
+        Dialect.setGlobalAllowReservedWords(true); //允许entity字段里用SQL保留字来命名
+        DbContext ctx = new DbContext(ds); 
         ctx.setConnectionManager(TinyTxConnectionManager.instance());// 事务相关
         DbContext.setGlobalDbContext(ctx);// 设定全局缺省上下文
         for (String ddl : ctx.toCreateDDL(Account.class, DemoUser.class))// 第一次要建表
