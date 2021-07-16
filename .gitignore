@@ -20,8 +20,7 @@ examples/**/build/
 *.log
 
 # Bat files used by yong
-maven_*.bat
-command.bat
+
 
 # BlueJ files
 *.ctxt

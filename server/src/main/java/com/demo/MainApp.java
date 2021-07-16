@@ -37,14 +37,16 @@ public class MainApp {
         System.out.println("classAbsPath=" + Class.class.getClass().getResource("/").getPath());
         System.out.println("webAppFolder=" + webAppFolder);
 
-        //以下为Undertow配置，参见 http://undertow.io/undertow-docs/undertow-docs-2.0.0/index.html#creating-a-servlet-deployment
+        //注意这个server演示并没有用到web.xml,而是用Undertow的Java方法来进行服务端配置
+        //以下为Undertow利用Java方法的配置，参见 http://undertow.io/undertow-docs/undertow-docs-2.0.0/index.html#creating-a-servlet-deployment
         DeploymentInfo info = Servlets.deployment().setClassLoader(MainApp.class.getClassLoader()).setContextPath("/").setDeploymentName("myserverlessServer");
 
         //InitConfig 进行了演示数据库的创建和MyServerless自定义模板方法的登记
         info.addServlet(Servlets.servlet("initConfig", InitConfig.class).setLoadOnStartup(0));
 
-        //undertow添加MyServerlessServlet处理远程方法调用
-        info.addServlet(Servlets.servlet("dispatch", MyServerlessServlet.class).addMapping(MyServerlessEnv.getRemoteMethodSuffix()));
+        //undertow添加MyServerlessServlet
+        System.out.println("=="+MyServerlessEnv.getRemoteMethodSuffix()+"==");
+        info.addServlet(Servlets.servlet("dispatch", MyServerlessServlet.class).addMapping("*."+MyServerlessEnv.getRemoteMethodSuffix()));
         info.setResourceManager(new FileResourceManager(new File(webAppFolder), 0))
                 .addWelcomePage("/page/home.html")//指定缺省页
                 .addErrorPage(new ErrorPage("/page/404.html")); //指定404页
