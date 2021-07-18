@@ -2,7 +2,7 @@
 //$$: return json object     
 //$: return json.data
 
-function $$mysrv(text) {
+function $$callDeployed(text) {
 	  if(text==null || text=="" || text.indexOf("FULL ")==0) 
 		  return "";
 	  return getRemoteJson("", text, arguments);
@@ -53,7 +53,7 @@ function $$qryEntityList(text) {
 }
 
 //Below methods return JSON's data 
-function $mysrv(text) {
+function $callDeployed(text) {
 	  if(text==null || text=="" || text.indexOf("FULL ")==0) 
 		  return "";
 	  return getRemoteJsonData("", text, arguments);
@@ -116,7 +116,7 @@ function getRemoteResponse(methodName, text, args){
 		  postJson["$"+i]=args[i]; 
   return $.ajax({
 		type : 'POST',
-		url : "/myserverless.mysrv",
+		url : "/myserverless.do",
 		cache : false,
 		dataType : "json",
 		data : postJson,
@@ -127,7 +127,7 @@ function getRemoteResponse(methodName, text, args){
 function myserverlessLogin(username, password){
 	  var jsonStr= $.ajax({
 			type : 'POST',
-			url : "/myserverless.mysrv?login=true&username="+username+"&password="+password,
+			url : "/myserverless.do?login=true&username="+username+"&password="+password,
 			cache : false,
 			dataType : "json",
 			data : {},

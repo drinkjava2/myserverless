@@ -38,7 +38,7 @@ public class DeployToolUtils {
 	 * Extract sql/java to server side for one html/javascript file, if forceDeploy
 	 * is true, ignore if have FRONT control word, force extract to server side
 	 */
-	public static void oneFileToServ(File file, boolean forceDeploy) {
+	public static void oneFileToServ(List<SqlJavaPiece> sqlJavaPieces, File file, boolean forceDeploy) {
 		String text = MyServerlessFileUtils.readFile(file.getAbsolutePath(), "UTF-8");
 		Map<String, SqlJavaPiece> formatedMap = new LinkedHashMap<String, SqlJavaPiece>();
 		boolean changed = false;
@@ -58,13 +58,16 @@ public class DeployToolUtils {
                 String className = piece.getClassName();
                 String src = SrcBuilder.createSourceCode(templateClass, PieceType.byRemoteMethodName(remoteMethod), piece);
                 MyServerlessFileUtils.writeFile(MyServerlessEnv.getSrcDeployFolder() + "/" + className + ".java", src, "UTF-8");
-                formated = MyServerlessStrUtils.replaceFirst(formated, key, "$"+MyServerlessEnv.getRemoteMethodSuffix()+"('" + className + "'");
+                formated = MyServerlessStrUtils.replaceFirst(formated, key, "$"+MyServerlessEnv.getCallDeployedMethodName()+"('" + className + "'");
+                
+                piece.setLocation(file.getAbsolutePath());
+                sqlJavaPieces.add(piece);
             }
 		}
 
 		if (changed) {
 			MyServerlessFileUtils.writeFile(file.getAbsolutePath(), formated, "UTF-8");
-			Systemout.println("goServ => " + file.getAbsolutePath());
+			Systemout.println("goServer => " + file.getAbsolutePath());
 		}
 	}
 
@@ -103,12 +106,12 @@ public class DeployToolUtils {
 	 */
 	public static void oneFileToFront(File file, boolean forceGoFront, List<String> toDeleteJavas, boolean force) {
 		String text = MyServerlessFileUtils.readFile(file.getAbsolutePath(), "UTF-8");
-		if (!text.contains("$"+MyServerlessEnv.getRemoteMethodSuffix()+"('"))
+		if (!text.contains("$"+MyServerlessEnv.getCallDeployedMethodName()+"('"))
 			return;
 
 		boolean changed = false;
 		Map<String, SqlJavaPiece> map = new LinkedHashMap<String, SqlJavaPiece>();
-		String formated = formatText(file, text, map, "$"+MyServerlessEnv.getRemoteMethodSuffix()+"('", '\'');
+		String formated = formatText(file, text, map, "$"+MyServerlessEnv.getCallDeployedMethodName()+"('", '\'');
         for (Entry<String, SqlJavaPiece> item : map.entrySet()) {
             changed = true;
             String key = item.getKey();
@@ -121,7 +124,7 @@ public class DeployToolUtils {
             String remoteMethod = MyServerlessStrUtils.toLowerCaseFirstOne(template);
             SqlJavaPiece newPiece = SqlJavaPiece.parseFromJavaSrcFile(javaSrcFileName);
             if (MyServerlessStrUtils.isEmpty(piece.getOriginText()))
-                formated = MyServerlessStrUtils.replaceFirst(formated, key, "$"+MyServerlessEnv.getRemoteMethodSuffix()+"('" + piece.getOriginText() + "'");
+                formated = MyServerlessStrUtils.replaceFirst(formated, key, "$"+MyServerlessEnv.getCallDeployedMethodName()+"('" + piece.getOriginText() + "'");
             else {
                 String classId=MyServerlessStrUtils.substringBefore(piece.getOriginText(), "_"); //to get #classId
                 if("default".equalsIgnoreCase(classId))

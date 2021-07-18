@@ -10,8 +10,6 @@
  */
 package com.demo;
 
-import com.github.drinkjava2.myserverless.DeployTool;
-
 /**
  * Test of DeployTool
  * 
@@ -22,9 +20,7 @@ public class DeployTest {
 
 	public static void main(String[] args) {
 		InitConfig.initMyServerlessTemplates();
-		// DeployTool.deploy();
-		DeployTool.goServ();
-		// DeployTool.goServForce();
+		// DeployTool.goServer();
 		// DeployTool.goFront();
 	}
 }

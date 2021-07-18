@@ -39,6 +39,7 @@ public class SqlJavaPiece {
 	String methodType = ""; // can only be SQL or JAVA
 	String packageName = ""; // if is "FULL" type, will parse package name
 	String className = ""; // class name, like "DemoUser"
+	String location=""; //the piece located in which file
 
 	public String getId() {
 		return id;
@@ -96,7 +97,15 @@ public class SqlJavaPiece {
 		this.className = className;
 	}
 
-	/**
+	public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    /**
 	 * parse a sql/java front text to SqlJavaPiece Object usage: <br/>
 	 * SqlJavaPiece p = SqlJavaPiece.parse("#234234 Front import a.b.C; import
 	 * b.d.e; import b.d.e; select * from users ");

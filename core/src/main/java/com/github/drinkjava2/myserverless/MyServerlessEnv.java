@@ -43,17 +43,17 @@ public class MyServerlessEnv {// NOSONAR
 
     private static final boolean is_product_stage;
 
-    private static final boolean java_file_export; // if export java class source file in classes/.../deploy folder
+    private static final boolean java_file_export; // if export java class source file in classes/.../deploy folder, default is false
 
-    private static final String develop_token;
+    private static final String develop_token; //develop stage token
 
-    private static final TokenSecurity tokenSecurity;
+    private static final TokenSecurity tokenSecurity; //TokenSecurity class name
 
-    private static final List<String> web_files = new ArrayList<String>(); //html, htm, jsp, js 
+    private static final List<String> web_files = new ArrayList<String>(); //html, htm, jsp, js, php 
 
-    private static final String remote_method_suffix;
-
-    //private static final AbstractBaseTemplate baseTemplate;
+    private static final String call_deployed_method_name; //default is "callDeployed", if change, also need change myserverless.js file.
+    
+    private static final String api_export_file; //API export file name, default is empty
 
     static {
         InputStream is = DeployTool.class.getClassLoader().getResourceAsStream("myserverless.properties");
@@ -103,10 +103,14 @@ public class MyServerlessEnv {// NOSONAR
                     throw new IllegalArgumentException("web_files configration missing, an example: web_files=html,htm,js");
             }
 
-            remote_method_suffix = prop.getProperty("remote_method_suffix");
-            if (MyServerlessStrUtils.isEmpty(remote_method_suffix))
-                throw new IllegalArgumentException("remote_method_suffix configration missing, an example: remote_method_suffix=somesuffix");
+            String call_deployed_method_name_str = prop.getProperty("call_deployed_method_name");
+            if (MyServerlessStrUtils.isEmpty(call_deployed_method_name_str))
+                call_deployed_method_name = "callDeployed";
+            else
+                call_deployed_method_name = call_deployed_method_name_str;
 
+            api_export_file=prop.getProperty("api_export_file");
+            
             String newFilePath = new File("").getAbsolutePath();
             newFilePath = MyServerlessStrUtils.substringBefore(newFilePath, "\\target");
             project_root_folder = MyServerlessStrUtils.substringBefore(newFilePath, "/target");
@@ -206,7 +210,11 @@ public class MyServerlessEnv {// NOSONAR
         return web_files;
     }
 
-    public static String getRemoteMethodSuffix() {
-        return remote_method_suffix;
+    public static String getCallDeployedMethodName() {
+        return call_deployed_method_name;
+    }
+    
+    public static String getApiExportFile() {
+        return api_export_file;
     }
 }

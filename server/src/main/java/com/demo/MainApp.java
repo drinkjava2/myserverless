@@ -12,7 +12,6 @@ package com.demo;
 
 import java.io.File;
 
-import com.github.drinkjava2.myserverless.MyServerlessEnv;
 import com.github.drinkjava2.myserverless.MyServerlessServlet;
 
 import io.undertow.Undertow;
@@ -44,9 +43,8 @@ public class MainApp {
         //InitConfig 进行了演示数据库的创建和MyServerless自定义模板方法的登记
         info.addServlet(Servlets.servlet("initConfig", InitConfig.class).setLoadOnStartup(0));
 
-        //undertow添加MyServerlessServlet
-        System.out.println("=="+MyServerlessEnv.getRemoteMethodSuffix()+"==");
-        info.addServlet(Servlets.servlet("dispatch", MyServerlessServlet.class).addMapping("*."+MyServerlessEnv.getRemoteMethodSuffix()));
+        //undertow添加MyServerlessServlet处理所有myserverless.do访问
+        info.addServlet(Servlets.servlet("dispatch", MyServerlessServlet.class).addMapping("*.do"));
         info.setResourceManager(new FileResourceManager(new File(webAppFolder), 0))
                 .addWelcomePage("/page/home.html")//指定缺省页
                 .addErrorPage(new ErrorPage("/page/404.html")); //指定404页

@@ -43,7 +43,9 @@ public class MyServerlessServlet extends HttpServlet {
     }
 
     public static void doAction(HttpServletRequest req, HttpServletResponse resp) {
-        System.out.println("In doAction");
+        //1.if has login parameter, treat it as login method
+        
+        
         resp.setHeader("Access-Control-Allow-Origin", "*"); //allow cross origin access 
         resp.setHeader("Access-Control-Allow-Methods", "*");
         resp.setHeader("Access-Control-Max-Age", "7200");

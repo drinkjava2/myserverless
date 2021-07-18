@@ -134,39 +134,6 @@ public abstract class BaseTemplate {
         $20 = getParam("$20");
     }
 
-    public static String httpPostOnURL(String theURL, Map<String, String> paramMap) {
-        try {
-            URL url = new URL(theURL);
-            System.out.println("url=" + url);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setDoOutput(true);
-            connection.setDoInput(true);
-            connection.setUseCaches(false);
-            connection.connect();
-
-            StringBuilder sb = new StringBuilder();
-            for (Entry<String, String> entry : paramMap.entrySet())
-                sb.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue(), "UTF-8")).append("&");
-            sb.append(MyServerlessEnv.getRemoteMethodSuffix()).append("=t");// end tag
-            String body = sb.toString();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
-            writer.write(body);
-            writer.close();
-
-            int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                InputStream inputStream = connection.getInputStream();
-                return MyServerlessFileUtils.inputStreamToString(inputStream, "utf-8");
-            }
-            System.err.println("Error happen when access Node server on url:" + theURL);
-            return "";
-        } catch (Exception e) {
-            System.err.println("Can not access Node server on URL:" + theURL);
-            return "";
-        }
-    }
-
     /**
      * The body method for template
      * @return Object

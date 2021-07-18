@@ -1,20 +1,20 @@
 ### MyServerless(原GoSqlGo)简介 | Description
 天下武功，唯快不破，MyServerless能让前端直接在HTML或Javascript里写业务代码和SQL，不需要后端程序员参与，从而实现快速开发。 
 
-MyServerless项目原名为GoSqlGo，因为考虑到它的开发模式有点类似于serverless，后端仅负责编译和执行前端脚本，不参与具体业务开发，而且都是以远程方法作为业务最小功能单元，所以从3.0版起项目更名为MyServerless。
+MyServerless项目原名为GoSqlGo，因为考虑到它的开发模式有点类似于serverless，后端不参与具体业务开发，只提供基础API供调用，而且都是以方法作为最小而且是唯一的功能单元，所以从3.0版起项目更名为MyServerless。
 
 MyServerless与通常的Serverless服务相比，主要区别是：  
-1.使用免费。通常大厂的Serverless服务是按调用来收费，而MyServerless是用户自己布署的，调用时不收费。  
-2.可定制，无依赖。开发者拥有全部的MyServerless服务端源码，可以自行定制后端服务，如选择不同的签权方式、DAO工具等，不与具体的云服务商绑定，可随时布署到不同的云服务或自有服务器。
-3.技术极简。大厂的Serverless服务通常很复杂而且每家都不一样，很难上手。而MyServerless核心源码只有几千行，采用标准Java脚本语言和SQL，极易上手，通常前端只需要了学会SQL即可上手进行开发。  
+1.使用免费。通常大厂的Serverless服务是按调用来收费，而MyServerless是用户自己布署的，使用时不收费。  
+2.可定制，无依赖。开发者拥有全部的MyServerless服务端源码，可以自行定制后端服务，如选择不同的签权方式、DAO工具等，不与具体的云服务商绑定。
+3.技术极简。大厂的Serverless服务通常较复杂，很难上手。而MyServerless核心源码只有几千行，采用标准Java脚本语言和SQL，极易上手，通常前端只需要了学会SQL即尝试进行开发。  
 4.功能极度简化。MyServerless的定位是用最少的代价给前端开通数据库访问能力。相比与大厂的Serverless服务，它在功能上有缺失：  
   1)目前不提供在线IDE编辑器。  
-  2)目前后端服务不提供高可用性、后端自动缩扩容这些功能。  
-  3)目前只专注于数据库访问，不支持一些特殊功能如文件上传等。  
-  4)大厂Serverless服务通常不区分开发期和布署期，而MyServerless因为安全原因，分为开发和布署两个阶段，开发期源码写在前端，布署期要利用打包工具将前端的源码和SQL抽取到后端。
+  2)目前不提供高可用性、后端自动缩扩容这些功能。  
+  3)目前只整合了一个DAO工具，专注于数据库访问，不支持一些特殊功能如文件上传等。  
+  4)大厂Serverless服务通常不区分开发期和布署期，而MyServerless因为安全原因，分为开发和布署两个阶段，开发期源码写在前端，远程发送到服务器执行，布署期必须利用打包工具将前端的源码和SQL抽取到后端。
 
 ### 适用场合 | Applications
-MyServerless适用于原型、快速、简单业务开发，以及前后端都是一个人开发的场合。  
+MyServerless适用于原型、快速、简单业务开发，以及前后端都是同一个人开发的场合，因为MyServerless是没有API的，也就不存在前后端沟通问题，所以开发效率高。  
 
 ### 不适用场合 | Not Applicable
 MyServerless不适用于复杂业务开发(比如脚本源码超过50行)，原因是因为目前不具备IDE插件可以调试存放在前端的Java脚本，调试效率低，如果业务复杂时，在调试上花的时间还不如直接让传统后端程序员提供API和文档。  
@@ -134,10 +134,10 @@ $java('#ReadUserAmount import abc.DemoUser; return new DemoUser().loadById($1).g
 在类根目录(项目的resources目录)下，有一个名为myserverless.properties的配置文件，可以进行配置，例如配置deploy目录、设定开发/生产阶段、设定develop_token和debug_inifo等，详见它的注释。  
 
 开发阶段：MyServerless示范项目在服务端运行，它自带一个动态Java脚本编译功能，前端发来的SQL和Java脚本，被动态编译为实际的Java类，并执行这个Java类，最后返回JSON对象。  
-                  如果javascript方法前是两个$符号，如$$java，则返回一个JSON对象，它的data字段保存了返回结果。  
-                  如果javascript方法前只有一个$符号，如$java，则返回的值直接就是Json的data字段。  
+如果javascript方法前是两个$符号，如$$java，则返回一个JSON对象，它的data字段保存了返回结果。  
+如果javascript方法前只有一个$符号，如$java，则返回的值直接就是Json的data字段。  
 
-布署阶段：双击server目录下的批处理文件go-server.bat，即可将前端所有的SQL和原生Java片段抽取到服务端去，转变为Java源文件，原有前端的SQl和JAVA代码在转换后将成为类似于$gsg('Xxxx_C9GK90J27','A');之类的通过ID进行的调用，以实现安全性。  
+布署阶段：双击server目录下的批处理文件go-server.bat，即可将前端所有的SQL和原生Java片段抽取到服务端去，转变为Java源文件，原有前端的SQl和JAVA代码在转换后将成为类似于$callDeployed('Xxxx_C9GK90J27','A');之类的通过ID进行的调用，以实现安全性。  
 server目录下还有一个文件名为go-front.bat，这个是逆操作，可以将后端的Java代码移回到前端。  
 
 ### 安全 | Security
@@ -166,8 +166,9 @@ server目录下还有一个文件名为go-front.bat，这个是逆操作，可�
 需要复用的业务代码和SQL写在公共JavaScript库里，前端其它地方调用这些公共库里的方法。  
 
 * 与GraphQL或XXX-API等项目的区别？
-以上项目是基于API及文档的创建和使用，而MyServerless是直接在前端写Java脚本和SQL，根本就不创建API。
- 
+上述项目是基于API及文档的创建和使用，没有文档项目就无法开发。而MyServerless是直接在前端写Java脚本和SQL，参数和业务注释直接写在源码即可，根本就不创建API, 所以不需要写文档。  
+另外如果必须生成API文档，它实际上也是可以做到的，只要在配置里加入api_export_file=xxx即可汇总所有前端源码和SQL成一个API文档，但这个API仅用于复查使用，并不是开发必不可少的文件。
+
 ## 相关开源项目 | Related Projects
 - [ORM数据库工具 jSqlBox](https://gitee.com/drinkjava2/jSqlBox)  
 

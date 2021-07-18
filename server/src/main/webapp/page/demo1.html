@@ -69,26 +69,25 @@ section header {
 	</section>
 	<script>
 	  function transfer(from, to, money){ 
-			var rst = $$javaTx(`
+			var rst = $$javaTx(`#AccountTransfer         
+					//参数说明   $1:账号1的id  $2:账号2的id $3:要转账的金额数
 					int money = Integer.parseInt($3);
 					if (money <= 0)
 					     return new JsonResult(0, "Error: Illegal input.");
-					Account a = new Account().setId($1).load();
+					Account a = DB.entityLoadById(Account.class, $1);
 					if (a.getAmount() < money)
 					     return new JsonResult(0, "Error:No enough balance!");
-					Account b = new Account().setId($2).load();
-					a.setAmount(a.getAmount() - money).update();
-					b.setAmount(b.getAmount() + money).update();
-					    return new JsonResult(200, "Transfer success!").setDataArray(a.getAmount(), b.getAmount());
+					DB.exe("update account set amount=amount-?",par(money)," where id=?",par($1));
+					DB.exe("update account set amount=amount+?",par(money)," where id=?",par($2));
+				    return new JsonResult(200, "Transfer success!");
 			        `, from,to,money); 
 		  $("#msgid").text(rst.msg);	
-		  if(rst.code==200) { 
-	 	      $("#"+from).text(rst.data[0]);
-	 	      $("#"+to).text(rst.data[1]);
+		  if(rst.code==200) 
 	 	      $("#msgid").css("background", "#dfb");
-		  }
-		  else $("#msgid").css("background", "#ffbeb8");
-		  
+		  else 
+                     $("#msgid").css("background", "#ffbeb8");
+	      $("#"+from).text($qryObject(`select amount from account where id=?`,'A'));
+ 	      $("#"+to).text($qryObject(`select amount from account where id=?`,'B'));
  	      $("#Users").html(getUserListHtml());
 		}
 	</script>
