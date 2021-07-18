@@ -24,14 +24,14 @@ MyServerless不适用于复杂业务开发(比如脚本源码超过50行)，原�
 ### 使用 | Usage
 用实例来说明MyServerless的使用，以下示例直接在前端写SQL和Java脚本，实测通过，文件位于[这里](https://gitee.com/drinkjava2/myserverless/blob/master/server/src/main/webapp/page/demo1.html)。  
 ```
-<!DOCTYPE html>
 <html>
- <head>
- <script src="/js/jquery-1.11.3.min.js"></script>
- <script src="/js/jquery-ajax-ext.js"></script>
- <script src="/js/myserverless-3.0.js"></script>
- </head>
- <body>
+<head>
+<meta charset="utf-8">
+<script src="/js/jquery-1.11.3.min.js"></script>
+<script src="/js/jquery-ajax-ext.js"></script>
+<script src="/js/myserverless-3.0.js"></script>
+</head>
+<body>
       
     <script>document.write($java(`return new WebBox("/WEB-INF/menu.html");`)); </script>
     <h2>Transaction demo, use jQuery</h2>
@@ -47,6 +47,9 @@ MyServerless不适用于复杂业务开发(比如脚本源码超过50行)，原�
 	</script>
 	   
 	<div id="msgid" class="msg"></div> 
+	<p id="Users">
+	    <script>document.write(getUserListHtml());</script>   
+	</p>
 	
 	<section>
 		<header>Account A</header>
@@ -67,25 +70,26 @@ MyServerless不适用于复杂业务开发(比如脚本源码超过50行)，原�
 	</section>
 	<script>
 	  function transfer(from, to, money){ 
-			var rst = $$javaTx(`#userTransfer
+			var rst = $$javaTx(`#AccountTransfer         
+					//参数说明   $1:账号1的id  $2:账号2的id $3:要转账的金额数
 					int money = Integer.parseInt($3);
 					if (money <= 0)
 					     return new JsonResult(0, "Error: Illegal input.");
-					Account a = new Account().setId($1).load();
+					Account a = DB.entityLoadById(Account.class, $1);
 					if (a.getAmount() < money)
 					     return new JsonResult(0, "Error:No enough balance!");
-					Account b = new Account().setId($2).load();//加载账户
-					a.setAmount(a.getAmount() - money).update();
-					b.setAmount(b.getAmount() + money).update();
-					    return new JsonResult(200, "Transfer success!").setDataArray(a.getAmount(), b.getAmount());
+					DB.exe("update account set amount=amount-?",par(money)," where id=?",par($1));
+					DB.exe("update account set amount=amount+?",par(money)," where id=?",par($2));
+				    return new JsonResult(200, "Transfer success!");
 			        `, from,to,money); 
 		  $("#msgid").text(rst.msg);	
-		  if(rst.code==200) { 
-	 	      $("#"+from).text(rst.data[0]);
-	 	      $("#"+to).text(rst.data[1]);
+		  if(rst.code==200) 
 	 	      $("#msgid").css("background", "#dfb");
-		  }
-		  else $("#msgid").css("background", "#ffbeb8");		  
+		  else 
+                     $("#msgid").css("background", "#ffbeb8");
+	      $("#"+from).text($qryObject(`select amount from account where id=?`,'A'));
+ 	      $("#"+to).text($qryObject(`select amount from account where id=?`,'B'));
+ 	      $("#Users").html(getUserListHtml());
 		}
 	</script>
 	<section>
@@ -96,7 +100,7 @@ MyServerless不适用于复杂业务开发(比如脚本源码超过50行)，原�
 			<button name="btnB2A" value="true" onclick="transfer('B','A',$('#amount').val())">From account B to account A</button>
 		</form>
 	</section>
- </body>
+</body>
 </html>
 ```
 另外还有两个演示:  
@@ -105,7 +109,7 @@ MyServerless不适用于复杂业务开发(比如脚本源码超过50行)，原�
 
 ### 运行 | Dependency and Run
 MyServerless分为server和core两个目录，server目录是一个示范项目，使用时只需要将server项目作一些修改，如更改数据库连接和重写签权逻辑，即可以用于实际开发 。core目录是内核源码，除非要定制后端，用户一般不需要关心。  
-在windows下点击server目录下的run_server.bat批处理，即可进入http://localhost演示界面， 使用用户名demo、密码123登录。  
+在windows下点击server目录下的run_server.bat批处理，即可进入http://localhost演示界面，使用用户名demo、密码123登录。演示项目是把Web和后端做在一起，实际开发时前端可以单独在html里远程开发，所有改动即时生效，不需重启后端。  
 
 ### 方法说明 | Methods
 在前端引入myserverless-3.0.js这个javascript库后，就可以直接在前端调用以下远程函数执行后端业务：
@@ -166,8 +170,8 @@ server目录下还有一个文件名为go-front.bat，这个是逆操作，可�
 需要复用的业务代码和SQL写在公共JavaScript库里，前端其它地方调用这些公共库里的方法。  
 
 * 与GraphQL或XXX-API等项目的区别？
-上述项目是基于API及文档的创建和使用，没有文档项目就无法开发。而MyServerless是直接在前端写Java脚本和SQL，参数和业务注释直接写在源码即可，根本就不创建API, 所以不需要写文档。  
-另外如果必须生成API文档，它实际上也是可以做到的，只要在配置里加入api_export_file=xxx即可汇总所有前端源码和SQL成一个API文档，但这个API仅用于复查使用，并不是开发必不可少的文件。
+GraphQL等项目重点在于API及文档的创建、管理。而MyServerless是直接在前端写Java脚本和SQL，参数和业务注释直接写在源码即可，根本就不创建API, 也不需要写文档。  
+另外MyServerless实际上也可以生成API，只要在配置里加入api_export_file=xxx即可汇总所有前端源码和SQL成一个API文档，但这个文档仅用于复核，并不是开发必不可少的文档。  
 
 ## 相关开源项目 | Related Projects
 - [ORM数据库工具 jSqlBox](https://gitee.com/drinkjava2/jSqlBox)  
