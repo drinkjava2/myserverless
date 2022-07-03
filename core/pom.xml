@@ -3,34 +3,44 @@
  <modelVersion>4.0.0</modelVersion>
  <groupId>com.github.drinkjava2</groupId>
  <artifactId>myserverless</artifactId>
+ <packaging>jar</packaging>
  <version>4.0</version>
- <packaging>jar</packaging> 
-  
- <name>MyServerless</name>
- <description>MyServerless</description> 
-   
+ 
+ <name>myserverless</name>
+ <description>MyServerless is a micro scale serverless sever</description> 
  <url>https://github.com/drinkjava2/myserverless</url>
-  
+   
+ <issueManagement>
+    <system>Github Issue</system>
+    <url>https://github.com/drinkjava2/myserverless/issues</url>
+ </issueManagement>
+
  <licenses>
    <license>
      <name>The Apache Software License, Version 2.0</name>
      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
    </license>
  </licenses>
- 
-  <developers>
+
+ <developers>
    <developer>
      <name>Yong Zhu</name>
      <email>yong9981@gmail.com</email>
      <url>https://github.com/drinkjava2/</url>
    </developer>
- </developers> 
-  
-  <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> 
+ </developers>
+
+ <scm>
+   <connection>scm:git@github.com:drinkjava2/myserverless.git</connection>
+   <developerConnection>scm:git@github.com:drinkjava2/myserverless.git</developerConnection>
+   <url>git@github.com:drinkjava2/myserverless.git</url>
+ </scm>
+
+ <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> 
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding> 
-        <!-- Demo run on JDK1.8 -->
+        <!-- Release on JDK1.8 -->
         <version.java>1.8</version.java>
         <version.javadoc>8</version.javadoc>
         <version.compiler-plugin>3.3</version.compiler-plugin>
@@ -70,83 +80,127 @@
 	</dependency>
 
     
-  </dependencies>
-  
-  
-  <build> 
-  
-    <plugins>
-	
-        <!--This plugin used to launch application in console -->
-        <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>appassembler-maven-plugin</artifactId>
-            <version>2.0.0</version>
-            <configuration>
-                <assembleDirectory>target</assembleDirectory>
-                <programs>
-                    <program>
-                        <mainClass>launch.Main</mainClass>
-                        <name>webapp</name>
-                    </program>
-                </programs>
-            </configuration>
-            <executions>
-                <execution>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>assemble</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-		
-	<!--This plug add resources folders as Java compile folder -->
-	 <plugin>
-		<groupId>org.codehaus.mojo</groupId>
-		<artifactId>build-helper-maven-plugin</artifactId>
-		<version>3.0.0</version>
-		<executions>  
-		  <execution>
-			<id>add-source</id>
-			<phase>generate-sources</phase>
-			<goals>
-			  <goal>add-source</goal>
-			</goals>
-			<configuration>
-			  <sources>
-				<source>src/main/resources</source>
-			  </sources>
-			</configuration>
-		  </execution> 
-		  <execution>
-			  <id>add-test-source</id>
-			  <phase>generate-sources</phase>
-			  <goals>
-				<goal>add-test-source</goal>
-			  </goals>
-			  <configuration>
-				<sources>
-					<source>src/test/resources</source>
-			  </sources>
-			  </configuration>
-		  </execution>  
-		</executions>
-	  </plugin> 
+ </dependencies> 
 
-        <!-- maven compiler -->
-	<plugin> 
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-compiler-plugin</artifactId>
-	<version>${version.compiler-plugin}</version>
-	<configuration>
-	    <source>${version.java}</source>
-	    <target>${version.java}</target>
-	    <encoding>UTF-8</encoding>
-	</configuration>
-	</plugin>   
-		  
-    </plugins>
-  </build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${version.compiler-plugin}</version>
+                <configuration>
+                    <source>${version.java}</source>
+                    <target>${version.java}</target>
+                    <encoding>UTF-8</encoding>
+               </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${version.jar-plugin}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${version.war-plugin}</version>
+                <configuration>
+                 <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>${version.clean-plugin}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${version.resources-plugin}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${version.surefire-plugin}</version>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <profiles> 
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${version.source-plugin}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <attach>true</attach>
+                            <encoding>UTF-8</encoding>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${version.javadoc-plugin}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <links>
+                                <link>http://docs.oracle.com/javase/${version.javadoc}/docs/api</link>
+                            </links>
+                            <!-- close doc line check, for Java6,7 only, if run on Java8 will get a Javadoc-plugin error -->
+                            <!--properties>
+                              <javadoc.opts>-Xdoclint:none</javadoc.opts>
+                            </properties-->
+                            <!-- close doc lint check for JAVA8 -->
+							<additionalparam>-Xdoclint:none</additionalparam>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${version.gpg-plugin}</version>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <distributionManagement>
+            <!-- Release, if is offical verison, will release to centre lib, if is "-SNAPSHOT" version, 
+              will release to sanpshot site, but they use same command:
+              "mvn clean deploy -P release -Dgpg.passphrase=yourGPGpwd"
+            -->  
+              <snapshotRepository>
+                 <id>oss</id>
+                 <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+              </snapshotRepository>
+              <repository>
+                 <id>oss</id>
+                 <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+              </repository>
+           </distributionManagement>
+        </profile>
+    </profiles>  
 </project>
-
