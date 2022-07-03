@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ReactMRP V1.0</title>
+<style>
+section {
+	margin-bottom: 30px
+}
+
+section header {
+	font-weight: bolder;
+	padding-bottom: 10px;
+}
+
+.amount {
+	width: 200px;
+	text-align: right;
+	border: 1px solid #aaa;
+	background-color: #eee;
+	padding: 3px 8px;
+}
+
+.msg {
+	width: 80%;
+	padding: 8px;
+	margin-bottom: 20px;
+}
+</style>
+<script src="/js/myserverless-purejs.js"></script>
+</head>
+<body>
+ <script>
+      //var result=syncData$myServerless(`PublicBackend$CheckLogin`); //如果加上这几行，会检查是否已登录
+      //if(!result)
+	  //  window.location.href="/login.html";
+</script>
+    
+	
+    <h2>ReactMRP1.0 backend MyServerless service started.</h2>	   
+	<div id="msgid" class="msg"></div>
+	 
+	<p id="Users">
+	</p>
+	 
+	 
+	 <script>
+	  $qryMapList(`#admin select * from users where 2>? order by userId`, 1).then(json=>{
+	      if(json.code==200){
+		     let users=json.data;
+		     let html=`User List:<br/> <table border="1" cellspacing="0">  <tr>   <th>userId</th>   <th>name</th>  <th>password</th>   <th>myToken</th>   </tr>`;
+  		     for(let i=0;i<users.length;i++) { 
+			 	html+= "<tr><td>"+users[i].userId+"</td>    <td>"+users[i].name+"</td>    <td>"+users[i].password+"</td>   <td>"+(!users[i].myToken?" ":users[i].myToken)+"</td>   </tr>";
+  		     }
+  		     html+="</table>";
+			 document.getElementById("Users").innerHTML=html;
+	      }  
+	  });
+
+	  function doLogout(){
+		if(true===syncData$myServerless(`PublicBackend$Logout`))
+			localStorage.setItem("myToken", null); 
+			window.location.href="/login.html";
+	  }
+	  
+	  function resetDatabase(){
+		   sync$java(`#developer  
+			import static com.gitee.drinkjava2.reactmrp.config.InitConfig.*;
+			initDataBase();  
+			initSeedData();`);
+		   window.location.href="/login.html";
+		  }
+	</script>
+
+	<a href="javascript:doLogout()">Logout</a> <br/> <br/>
+	<a href="javascript:resetDatabase()">Reset Database</a>
+ 
+</body>
+</html>
