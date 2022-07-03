@@ -40,7 +40,7 @@ $qryEntity(String, Object...)  返回第一行数据为实体对象，SQL写法�
 $qryEntityList(String, Object...)  返回多行数据为List<实体>对象，SQL写法是实体类名+逗号+SQL, 示例:$qryEntityList(`#public a.b.Demo, select * from demo`);   
 $executeSql(String, Object...) 执行一个SQL，返回SQL影响行数  
 ```
-注意事项:
+注意事项:  
 1.以上方法Java源码或SQL文本，要使用键盘ESC下方的单引号，这是Javascript的特殊引号，支持多行文本。  
 2.以上方法并不是MyServerless自带的，而是项目自定义的，用户对每个项目可以自定义和登记自己的方法，具体细节请参见项目src/main/resources/template下的方法模板和InitConfig类。  
 3.每个方法都要起一个方法ID，方法ID名允许重复，方法ID的作用是为了权限配置。例如下面这个方法定义了一个名为ReadUserAmount的方法ID  
@@ -59,7 +59,7 @@ $executeSql(String, Object...) 执行一个SQL，返回SQL影响行数
   syncData$java(`#xxxx return 123;`);  // 同步阻塞方法，返回 json的data字段，即123这个值
   ```
 
-下面以一个实例来解说如果在前端使用MyServerless方法：
+下面以一个实例来解说如何在前端使用MyServerless：
 ```
 import * as my from "@/myserverless/myserverless.js"
 
@@ -78,6 +78,17 @@ export function tableList(query) {
             m.put("total", total);
             return m;
       `, query);
+
+      
+ //调用
+ tableList(query).then((map) => {  //用.then的形式处理异步方法
+        if(map){ 
+            const list = map.items;
+            const total = map.total;
+            if (this._isMounted) {
+                this.setState({ list, total });
+            }
+        }
 }
 ```
 1.首先在js/ts/jsx文件里引入myserverless.js  
@@ -111,7 +122,7 @@ export function tableList(query) {
 MyServerless该说的重点都说完了，所以这篇介绍本身就是它的全部用户手册了，如果还有不清楚的，可以把ReactMRP实际跑一下，把后端部分研究一下就可以了。  
 
 # 缘起 
-对了，最后上一张图来说一下我为什么开发这个项目，我承经有过2个预言，第一个是2017年人类将被机器人代替，很遗憾这个预言失败了。第二个预言就是下面这张图，虽然作为一个预言家，自己实现自己的预言脸皮太厚了，但好在看来这第二个预言不会再失败了，因为道理很简单，我没有给它加上时间限制，哈哈。。。。。。
+对了，最后上一张图来说一下我为什么开发这个项目，我承经有过2个预言，第一个是2017年人类将被机器人代替，很遗憾这个预言没有实现。第二个预言就是下面这张图，虽然作为一个预言家，自己实现自己的预言脸皮太厚了，但好在看来这第二个预言不会再失败了，因为道理很简单，我没有给它加上时间限制，哈哈。。。。。。
 ![origin](origin.png)  
 
 
