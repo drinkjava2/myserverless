@@ -78,24 +78,13 @@ export function tableList(query) {
             m.put("total", total);
             return m;
       `, query);
-
-      
- //调用
- tableList(query).then((map) => {  //用.then的形式处理异步方法
-        if(map){ 
-            const list = map.items;
-            const total = map.total;
-            if (this._isMounted) {
-                this.setState({ list, total });
-            }
-        }
-}
 ```
 1.首先在js/ts/jsx文件里引入myserverless.js  
-2.这个方法传入了一个参询对象query, 在java方法里$1代表这第一个参数，这段代码逻辑是根据参数动态分页查询，返回列表和符合条件的总记录数
-3.my.data$java()说明返回的是一个值,即方法中的m变量，而且这是一个异步方法，所以要用promise形式来调用：
+2.方法ID为public，说明这个方法的用户权限是public，即无需登录即可使用，但是因为是动态代码，实际只有两种情况才允许执行，即以developer权限登录的用户，或代码已抽取并布署到服务器上。
+3.这个方法传入了一个参询对象query, 在java方法里$1代表这第一个参数，这段代码逻辑是根据参数动态分页查询，返回列表和符合条件的总记录数
+4.my.data$java()说明返回的是一个值,即方法中的m变量，而且说明这是一个异步方法，要用promise形式来调用：
 ```
-      ...... 
+      //异步方法要用.then来处理
       tableList(query).then((map) => {
         if(map){ 
             const list = map.items;
